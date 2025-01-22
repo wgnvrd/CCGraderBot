@@ -42,8 +42,13 @@ def main():
         print('{0} | {1} | {2}'.format(count, course['id'], course['name']))
         count +=1
 
+    for sub in data:
+        if 'attachments' in sub:
+            link = sub['attachments'][0]['url']
+            r = requests.get(link,headers = header)
+            print(r.json())
 
-""" 
+    """ 
     data = get_assignments(43491)
     for assignment in data:
        if 'name' in assignment and 'id' in assignment:
@@ -59,12 +64,14 @@ def main():
     #             extract_zip(link) 
     # data = get_external_tools(43491)
     # print(data)
-    r = grade_assignment(course_id=43491, assignment_id=155997, user_id=24366, score=2)
+    """
+    r = grade_assignment(course_id=43491, assignment_id=155997, user_id=24366, score=3, comment='good job')
     data = r.json()
     print(data)
-    
-def grade_assignment(course_id, assignment_id, user_id, score):
-    r = put_request(f"courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}", score=score)
+
+
+def grade_assignment(course_id, assignment_id, user_id, score, comment):
+    r = put_request(f"courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}", score=score, comment='good job')
     return r
 
 def create_score():
@@ -75,16 +82,11 @@ def post_request(endpoint):
 
 def put_request(endpoint, **kwargs):
     print("endpoint:", url + endpoint)
-    r = requests.put(url + endpoint, data=json.dumps({"submission": {"posted_grade": "2"}}), headers=header)
+    payload = {'submission[posted_grade]': kwargs['score']}
+    if 'comment' in kwargs:
+        payload.update({'comment[text_comment]': kwargs['comment']})
+    r = requests.put(url + endpoint, data=payload, headers=header)
     return r
-
-    for sub in data:
-        if 'attachments' in sub:
-            link = sub['attachments'][0]['url']
-            r = requests.get(link,headers = header)
-            print(r.json()) """
-            
-        
  
 def make_request(endpoint):
     r = requests.get(url + endpoint, headers = header)
