@@ -17,6 +17,7 @@ url = "https://canvas.coloradocollege.edu/api/v1/"
 
 def main():
     #Doin like a simple navigation of classes with really simple input stuff -- definitely needs to be replaced at somepoint
+    get_submission(course_id=43491, assign_id=155997, user_id=24366)
     inputs = [0,1]
     print("Welcome! What would you like to do?")
     val = int(input("0. Exit \n1. See my Courses\n"))
@@ -40,7 +41,7 @@ def main():
     count = 0
     for course in courseList:
         print('{0} | {1} | {2}'.format(count, course['id'], course['name']))
-        count +=1
+        count+=1
 
     for sub in data:
         if 'attachments' in sub:
@@ -65,7 +66,15 @@ def main():
     # data = get_external_tools(43491)
     # print(data)
     """
+
+    print("\n\n\nspace\n\n\n")
     r = grade_assignment(course_id=43491, assignment_id=155997, user_id=24366, score=3, comment='good job')
+    print("\n\n\nspace\n\n\n")
+
+    print(r)
+
+    print("\n\n\nspace\n\n\n")
+
     data = r.json()
     print(data)
 
@@ -87,7 +96,8 @@ def put_request(endpoint, **kwargs):
         payload.update({'comment[text_comment]': kwargs['comment']})
     r = requests.put(url + endpoint, data=payload, headers=header)
     return r
- 
+
+# restructure this later because this only works for lists
 def make_request(endpoint):
     r = requests.get(url + endpoint, headers = header)
     data = []
@@ -120,5 +130,12 @@ def get_assignments(course_id):
 def get_submissions(course_id, assign_id):
     data = make_request(endpoint=f"courses/{course_id}/assignments/{assign_id}/submissions")
     return data
+
+def get_submission(course_id, assign_id, user_id):
+    endpoint = f"courses/{course_id}/assignments/{assign_id}/submissions/{user_id}"
+    r = requests.get(url + endpoint, headers = header)
+    print(r)
+    return r.json()
+
 if __name__ == "__main__":
     main()
