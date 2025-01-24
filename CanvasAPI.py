@@ -34,8 +34,9 @@ def put_request(endpoint, **kwargs):
     return r
 
 # restructure this later because this only works for lists
-def make_request(endpoint):
-    r = requests.get(url + endpoint, headers = header)
+def make_request(endpoint, params=None):
+    r = requests.get(url + endpoint, headers = header, params=params)
+    print(r)
     data = []
     data += r.json()
     while r.links.get('next', False): 
@@ -59,8 +60,10 @@ def get_external_tools(course_id):
     data = make_request(endpoint=f"courses/{course_id}/external_tools")
     return data
 
-def get_assignments(course_id):
-    data = make_request(endpoint=f"courses/{course_id}/assignments")
+def get_assignments(course_id, params=None):
+    # params = {"bucket": "upcoming"}
+    # params = None
+    data = make_request(endpoint=f"courses/{course_id}/assignments", params=params)
     return data
 
 def get_submissions(course_id, assign_id):
