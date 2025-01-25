@@ -1,5 +1,5 @@
 import argparse
-import configparser
+import configparser, os, pathlib
 from CanvasAPI import grade_assignment
 
 class Autograder():
@@ -33,6 +33,15 @@ def grade(userId, configFile):
     """
     grade_assignment(values["CourseId"], values["AssignId"],userId, 2.5, comment="This was graded from a config file")
 
+def writeConfig(courseId, assignId, testFilePath, language):
+    config = configparser.ConfigParser()
+    config['DEF'] = {
+        'Language' : language,
+        'CourseId' : courseId,
+        'AssignId' : assignId,
+        'TestFile' : testFilePath}
+    
+    config.write(open(os.path.join('config_files', "testCon.ini"),'w'))
 
 
     
