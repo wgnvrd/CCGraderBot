@@ -47,7 +47,7 @@ def make_request(endpoint, params=None):
 def extract_zip(url):
     r = requests.get(url,headers = header)
     z = zipfile.ZipFile(io.BytesIO(r.content))
-    z.extractall(".")
+    z.extractall(os.path.join("testing"))
 
 def get_courses():
     data = make_request(endpoint="courses")

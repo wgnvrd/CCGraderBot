@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites time="15.682687">
+    <testsuite name="FirstTest.fillArray" tests = "3">
+        <testcase name="fillArrayUpZero"/>
+        <testcase name="fillArrayUpNonzero"/>
+        <testcase name="fillArrayDownZero"/>
+        <testcase name="fillArrayDownNonzero"/>
+    </testsuite>
+    <testsuite name="FirstTest.Filename">
+        <testcase name="unsetFilename" classname="Tests.Authentication" time="2.508" />
+        <testcase name="existingFilenameConstructor" classname="Tests.Authentication" time="1.230816" />
+        <testcase name="nonexistingFilename" classname="Tests.Authentication" time="0.982">      
+            <failure>
+            </failure> 
+        </testcase>
+    </testsuite>
+        <testsuite name="FirstTest.seekLetter">
+        <testcase name="seekLetterSetTwice" classname="Tests.Authentication" time="2.508" />
+        <testcase name="seekLetterSetOnceSetMethod" classname="Tests.Authentication" time="1.230816" />
+        <testcase name="seekLetterSetOnceConstructor" classname="Tests.Authentication" time="0.982">       </testcase>
+    </testsuite>
+</testsuites>
