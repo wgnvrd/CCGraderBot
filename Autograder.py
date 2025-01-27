@@ -49,10 +49,12 @@ def grade(userId, configFile):
      
      #Hard coding for example purposes
     data = junitparser.JUnitXml.fromfile(os.path.join("testing", "bad.xml"))
+    #Iterate through every type of test
     for suite in data:
         fail = False
         comment += "\n\n " + suite.name
         for case in suite:
+            #Check for failures
             if case.result:
                 print(case.result)
                 if isinstance(case.result[0], junitparser.Failure):
@@ -61,6 +63,7 @@ def grade(userId, configFile):
             else:
 
                 comment += "\n SUCCESS: " + case.name
+            #If there's no failures -- points go up
         if not fail:
             score += 1
 
@@ -68,7 +71,7 @@ def grade(userId, configFile):
 
 
 
-    grade_assignment(values["CourseId"], values["AssignId"],userId, score, comment=comment)
+    grade_assignment(values["CourseId"], values["AssignId"],userId, score, my_comment=comment)
 
 def writeConfig(courseId, assignId, testFilePath, language):
     config = configparser.ConfigParser()
