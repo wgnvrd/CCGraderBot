@@ -16,7 +16,7 @@ url = "https://canvas.coloradocollege.edu/api/v1/"
 # ID of user: 24366
 
 def grade_assignment(course_id, assignment_id, user_id, score, comment):
-    r = put_request(f"courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}", score=score, comment='good job')
+    r = put_request(f"courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}", score=score, comment="good job")
     return r
 
 def create_score():
