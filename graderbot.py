@@ -1,4 +1,4 @@
-from CanvasAPI import grade_assignment, get_submission, extract_zip, get_submissions
+from CanvasAPI import grade_assignment, get_submission, extract_zip, get_submissions, get_assignments
 
 import argparse
 import random
@@ -101,8 +101,8 @@ elif(args.method == str("download_zips")):
 # Once we have the autograder actually set up, hopefully this can 
 # actually have it plug into that. -Kazu 1/26/25
 # python graderbot.py autograde --course_id 43491 --assign_id 155997
-elif(args.method == str("autograde")):
-    print("Method: download zips")
+elif(args.method == str("autograde_assign")):
+    print("Method: autograde assignment")
     print("Course ID: " + str(args.course_id))
     print("Assignment ID: " + str(args.assign_id))
     url = get_submissions(str(args.course_id),str(args.assign_id))
@@ -117,3 +117,34 @@ elif(args.method == str("autograde")):
         data = r.json()
         print(data)
     print(str(len(url)) + " zip(s) extracted")
+
+# Hypothetical if case that can grade all the assignments for a course
+elif(args.method == str("autograde_course")):
+    print("Method: autograde course")
+    print("Course ID: " + str(args.course_id))
+    a = get_assignments(str(args.course_id))
+    print("len(a): " + str(len(a)))
+    graded = 0
+    nosubs = 0
+    for assign in range(0,len(a)):
+        print("Assignment id: "+ str(a[assign]["id"]))
+        print("Assignment name: " + str(a[assign]["name"]))
+        assignid = a[assign]["id"]
+        if(a[assign]["has_submitted_submissions"]==True):
+            s = get_submissions(str(args.course_id),str(assignid))
+            print("Number of submissions: " + str(len(s)))
+            for sub in range(0,len(s)):
+                userid = s[sub]["user_id"]
+                link = get_submission(str(args.course_id),str(assignid),str(userid))["attachments"][0]["url"]
+                extract_zip(link)
+                print("autograder method placeholder slot?")
+                grade = placeholder_autograder()
+                print("Score: " + str(grade["score"]) + ", Comment: " + grade["comment"])
+                r = grade_assignment(args.course_id, args.assign_id, userid, grade["score"], grade["comment"])
+                data = r.json()
+            print(str(len(s)) + " zip(s) extracted")
+            graded+=1
+        else:
+            print("No submissions for " + str(a[assign]["name"]))
+            nosubs+=1
+    print(str(graded)+ " assignment(s) graded, " + str(nosubs) + " assignment(s) had no submissions")
