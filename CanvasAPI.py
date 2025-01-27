@@ -15,8 +15,8 @@ url = "https://canvas.coloradocollege.edu/api/v1/"
 # ID of submission: 3331124
 # ID of user: 24366
 
-def grade_assignment(course_id, assignment_id, user_id, score, comment):
-    r = put_request(f"courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}", score=score, comment='good job')
+def grade_assignment(course_id, assignment_id, user_id, score, my_comment):
+    r = put_request(f"courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}", score=score, comment=my_comment)
     return r
 
 def create_score():
@@ -36,7 +36,7 @@ def put_request(endpoint, **kwargs):
 # restructure this later because this only works for lists
 def make_request(endpoint, params=None):
     r = requests.get(url + endpoint, headers = header, params=params)
-    print(r)
+    # print(r)
     data = []
     data += r.json()
     while r.links.get('next', False): 
@@ -73,6 +73,6 @@ def get_submissions(course_id, assign_id):
 def get_submission(course_id, assign_id, user_id):
     endpoint = f"courses/{course_id}/assignments/{assign_id}/submissions/{user_id}"
     r = requests.get(url + endpoint, headers = header)
-    print(r)
+    # print(r)
     return r.json()
 
