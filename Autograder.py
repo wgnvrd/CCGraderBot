@@ -1,6 +1,6 @@
 import argparse
 import configparser, os, pathlib, junitparser
-from CanvasAPI import grade_assignment, extract_zip, get_submission
+from CanvasHelper import grade_assignment, extract_zip, get_submission
 
 class Autograder():
     def __init__(self, course_id):
