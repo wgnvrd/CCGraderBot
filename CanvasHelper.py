@@ -76,10 +76,10 @@ def grade_submission(submission, score, comment):
     #         data += r.json()
     #     return data
 
-    # def extract_zip(url):
-    #     r = requests.get(url,headers = header)
-    #     z = zipfile.ZipFile(io.BytesIO(r.content))
-    #     z.extractall(os.path.join("testing"))
+    def extract_zip(url):
+        r = requests.get(url,headers = header)
+        z = zipfile.ZipFile(io.BytesIO(r.content))
+        z.extractall(os.path.join("testing"))
 
     # def get_courses():
     #     data = make_request(endpoint="courses")
