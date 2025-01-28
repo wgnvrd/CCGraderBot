@@ -1,15 +1,57 @@
 import argparse
 import configparser, os, pathlib, junitparser
-from CanvasAPI import grade_assignment, extract_zip, get_submission
+import time
+
+from CanvasAPI import grade_assignment, extract_zip, get_submission, get_submissions
+from canvasapi import Canvas
+from canvasapi.assignment import Assignment
+from canvasapi.submission import Submission
+from dotenv import load_dotenv
+
+import polling
+
+load_dotenv()
+API_KEY = os.getenv("CANVAS_ACCESS_TOKEN")
+API_URL = "https://canvas.coloradocollege.edu/"
 
 class Autograder():
     def __init__(self, course_id):
-        self.course_id = course_id
-    def get_ungraded_assignments():
+        self.canvas = Canvas(API_URL, API_KEY)
+        self.course = self.canvas.get_course(course_id)
+        self.ungraded_assignments = set()
+    
+    def get_ungraded_assignments(self):
         pass
     
-    def poll_canvas():
-        pass
+    def submission_is_graded(self, submission: Submission):
+        return submission.grade is None or not submission.grade_matches_current_submission
+    
+    def submission_is_resubmission(self, submission: Submission):
+        return submission.attempt > 1
+
+    def get_ungraded_submissions(self, assignment: Assignment):
+        submissions = assignment.get_submissions()
+        return [s for s in submissions if self.submission_is_resubmission(s)]
+
+    def poll(self, condition, interval: float):
+        while True:
+            value = condition()
+            if value:
+                return value
+            time.sleep(interval)
+
+    def poll_canvas(self, assignment_id):
+        while True:
+            print("Listening for assignments...")
+            assignment = self.course.get_assignment(assignment_id)
+            ungraded_assignments = self.poll(self.get_ungraded_assignments)
+            for assignment in ungraded_assignments:
+                print("Assigning automatic grade to assignment ")
+        
+            
+        
+
+
 
 #Example of Grading from a file
 """ 
@@ -67,7 +109,7 @@ def grade(userId, configFile):
         if not fail:
             score += 1
 
-                    
+                
 
 
 
@@ -84,4 +126,6 @@ def writeConfig(courseId, assignId, testFilePath, language):
     config.write(open(os.path.join('config_files', "testCon.ini"),'w'))
 
 
-    
+if __name__ == "__main__":
+    autograder = Autograder(43491)
+    autograder.poll_canvas()
