@@ -2,7 +2,7 @@ import argparse
 import configparser, os, pathlib, junitparser
 import time
 
-from CanvasAPI import grade_assignment, extract_zip, get_submission, get_submissions
+from CanvasHelper import grade_assignment, extract_zip, get_submission, get_submissions
 from canvasapi import Canvas
 from canvasapi.assignment import Assignment
 from canvasapi.submission import Submission
