@@ -5,6 +5,8 @@ import zipfile
 import io
 
 from canvasapi import Canvas
+from canvasapi.submission import Submission
+from canvasapi.assignment import Assignment
 
 load_dotenv()
 # Canvas API URL
@@ -52,37 +54,15 @@ def get_ungraded_submissions(assignment):
 def grade_submission(submission, score, comment):
     submission.edit(submission={'posted_grade': score})
 
-# IMPORTANT: THIS RETURNS A LIST, NOT A PAGINATEDLIST
-def get_ungraded_assignments(course_id):
-    course = canvas.get_course(course_id)
-    # assignments = course.get_assignments(bucket="ungraded")
-    assignments = course.get_assignments()
-    assignment_list = []
-    for assignment in assignments:
-        assignment_list.append(assignment)
-    
-    ungraded_assignments = []
-    for assign in assignment_list:
-        ungraded_submissions = get_ungraded_submissions(assign)
-        submission_list = []
-        for submission in ungraded_submissions:
-            submission_list.append(submission)
-        print(assign)
-        print(submission_list)
-        print(len(submission_list))
-        if (len(submission_list) != 0):
-            ungraded_assignments.append(assign)
-    return ungraded_assignments
-    
-def submission_is_graded(submission):
-    return submission.grade is None or not submission.grade_matches_current_submission
+def submission_is_graded(submission: Submission):
+        return submission.grade and submission.grade_matches_current_submission
 
-def submission_is_resubmission(submission):
+def submission_is_resubmission(submission: Submission):
     return submission.attempt > 1
 
-# def get_ungraded_submissions(assignment):
-#     submissions = assignment.get_submissions()
-#     return [s for s in submissions if self.submission_is_resubmission(s)]
+def get_ungraded_submissions(assignment: Assignment):
+    submissions = assignment.get_submissions()
+    return [s for s in submissions if not submission_is_graded(s)]
 
     # load_dotenv()
 
@@ -124,10 +104,10 @@ def submission_is_resubmission(submission):
     #         data += r.json()
     #     return data
 
-    # def extract_zip(url):
-    #     r = requests.get(url,headers = header)
-    #     z = zipfile.ZipFile(io.BytesIO(r.content))
-    #     z.extractall(os.path.join("testing"))
+    def extract_zip(url):
+        r = requests.get(url,headers = header)
+        z = zipfile.ZipFile(io.BytesIO(r.content))
+        z.extractall(os.path.join("testing"))
 
     # def get_courses():
     #     data = make_request(endpoint="courses")
