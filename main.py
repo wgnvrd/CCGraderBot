@@ -1,6 +1,6 @@
 import requests
 
-from CanvasAPI import header, get_submission, get_courses, grade_assignment
+from CanvasHelper import header, get_submission, get_courses, grade_assignment
 
 def main():
     #Doin like a simple navigation of classes with really simple input stuff -- definitely needs to be replaced at somepoint
