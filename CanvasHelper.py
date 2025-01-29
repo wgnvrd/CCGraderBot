@@ -16,25 +16,73 @@ API_KEY = os.getenv("CANVAS_ACCESS_TOKEN")
 # Initialize a new Canvas object
 canvas = Canvas(API_URL, API_KEY)
 
-
-
 def get_course(course_id):
     return canvas.get_course(course_id)
 
-def get_assignment(course,assign_id):
+def get_assignment(course_id,assign_id):
+    course = get_course(course_id)
     return course.get_assignment(assign_id)
 
-def get_assignments(course):
+def get_assignments(course_id):
+    course = get_course(course_id)
     return course.get_assignments()
 
-def get_ungraded_assignments(course):
+def get_ungraded_assignments(course_id):
+    course = get_course(course_id)
     return course.get_assignments(bucket='ungraded')
 
-def get_submission(assignment, user_id):
+def get_submission(course_id,assign_id, user_id):
+    course = get_course(course_id)
+    assignment = course.get_assignment(assign_id)
     return assignment.get_submission(user_id)
+
+def get_submissions(course_id, assign_id):
+    course = get_course(course_id)
+    assignment = course.get_assignment(assign_id)
+    return assignment.get_submissions()
+
+def get_ungraded_submissions(assignment):
+    submissions = assignment.get_submissions()
+    ungraded = []
+    for sub in submissions:
+        if(submission_is_graded(sub)==True):
+            ungraded.append(sub)
+    return ungraded
 
 def grade_submission(submission, score, comment):
     submission.edit(submission={'posted_grade': score})
+
+# IMPORTANT: THIS RETURNS A LIST, NOT A PAGINATEDLIST
+def get_ungraded_assignments(course_id):
+    course = canvas.get_course(course_id)
+    # assignments = course.get_assignments(bucket="ungraded")
+    assignments = course.get_assignments()
+    assignment_list = []
+    for assignment in assignments:
+        assignment_list.append(assignment)
+    
+    ungraded_assignments = []
+    for assign in assignment_list:
+        ungraded_submissions = get_ungraded_submissions(assign)
+        submission_list = []
+        for submission in ungraded_submissions:
+            submission_list.append(submission)
+        print(assign)
+        print(submission_list)
+        print(len(submission_list))
+        if (len(submission_list) != 0):
+            ungraded_assignments.append(assign)
+    return ungraded_assignments
+    
+def submission_is_graded(submission):
+    return submission.grade is None or not submission.grade_matches_current_submission
+
+def submission_is_resubmission(submission):
+    return submission.attempt > 1
+
+# def get_ungraded_submissions(assignment):
+#     submissions = assignment.get_submissions()
+#     return [s for s in submissions if self.submission_is_resubmission(s)]
 
     # load_dotenv()
 

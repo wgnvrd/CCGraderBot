@@ -1,5 +1,5 @@
 # from CanvasAPI import grade_assignment, get_submission, extract_zip, get_submissions, get_assignments, 
-from CanvasHelper import get_course, get_assignment, get_assignments, get_ungraded_assignments, get_submission, grade_submission
+from CanvasHelper import get_course, get_assignment, get_assignments, get_ungraded_assignments, get_submission, get_submissions, get_ungraded_submissions, grade_submission, submission_is_graded, submission_is_resubmission
 
 import argparse
 import sys
@@ -49,11 +49,11 @@ class GraderBot(object):
     def __init__(self):
         parser = argparse.ArgumentParser(
             description='Graderbot attempting to use git format',
-            usage='''gb <command> [<args>]''')
+            usage='''<command> [<args>]''')
         parser.add_argument('command', help='Subcommand to run')
         # parse_args defaults to [1:] for args, but you need to
         # exclude the rest of the args too, or validation will fail
-        args = parser.parse_args(sys.argv[2:3])
+        args = parser.parse_args(sys.argv[1:2])
         print(args)
         if not hasattr(self, args.command):
             print("Unrecognized command")
@@ -63,33 +63,111 @@ class GraderBot(object):
         print("Command exists")
         getattr(self, args.command)()
 
-# get_course_test, get_assignment_test, get_assignments_test, 
-# get_ungraded_assignments_test, get_submission_test, 
-# grade_submission_test
+# get_course, get_assignment, get_assignments, 
+# get_ungraded_assignments, get_submission, get_submissions, 
+# get_ungraded_submissions, grade_submissions
+# python graderbot.py get_course --course_id 43491
     def get_course(self):
         parser = argparse.ArgumentParser(description="Get a single course")
         parser.add_argument("--course_id", help="Course ID of the class you're trying to access")
-        course = parser.parse_args(sys.argv[3:])
+        course = parser.parse_args(sys.argv[2:])
         print(course.course_id)
         print(get_course(int(course.course_id)))
-        print("Running gb get_course")
-    # def commit(self):
-    #     parser = argparse.ArgumentParser(
-    #         description='Record changes to the repository')
-    #     # prefixing the argument with -- means it's optional
-    #     parser.add_argument('--amend', action='store_true')
-    #     # now that we're inside a subcommand, ignore the first
-    #     # TWO argvs, ie the command (git) and the subcommand (commit)
-    #     args = parser.parse_args(sys.argv[2:])
-    #     print 'Running git commit, amend=%s' % args.amend
+        print("Running get_course")
 
-    # def fetch(self):
-    #     parser = argparse.ArgumentParser(
-    #         description='Download objects and refs from another repository')
-    #     # NOT prefixing the argument with -- means it's not optional
-    #     parser.add_argument('repository')
-    #     args = parser.parse_args(sys.argv[2:])
-    #     print 'Running git fetch, repository=%s' % args.repository
+# python graderbot.py get_assignment --course_id 43491 --assign_id 155997
+    def get_assignment(self):
+        parser = argparse.ArgumentParser(description="Get a single assignment")
+        parser.add_argument("--course_id", help="Course ID of the class you're trying to access")
+        parser.add_argument("--assign_id", type=int, help="Assignment ID of the assignment you're trying to access")
+        assignment = parser.parse_args(sys.argv[2:])
+        print(assignment.course_id)
+        print(assignment.assign_id)
+        print(get_assignment(int(assignment.course_id),int(assignment.assign_id)))
+        print("Running get_assignment")
+
+# python graderbot.py get_assignments --course_id 43491
+    def get_assignments(self):
+        parser = argparse.ArgumentParser(description="Get a single course")
+        parser.add_argument("--course_id", help="Course ID of the class you're trying to access")
+        course = parser.parse_args(sys.argv[2:])
+        assignments = get_assignments(course.course_id)
+        for assignment in assignments:
+            print(assignment)
+        # print(get_assignments(int(course.course_id)))
+        print("Running get_assignments")
+
+# python graderbot.py get_sub --course_id 43491 --assign_id 155997 --user_id 24388
+    def get_submission(self):
+        parser = argparse.ArgumentParser(description="Get a single assignment")
+        parser.add_argument("--course_id", help="Course ID of the class you're trying to access")
+        parser.add_argument("--assign_id", type=int, help="Assignment ID of the assignment you're trying to access")
+        parser.add_argument("--user_id", type=int,help="User ID of the student whose work you're trying to access")
+        submission = parser.parse_args(sys.argv[2:])
+        print("Course id: " + str(submission.course_id) + ", assignment id: " + str(submission.assign_id) + ", user id: " + str(submission.user_id))
+        sub = get_submission(submission.course_id,submission.assign_id,submission.user_id)
+        print(sub)
+
+# python graderbot.py get_subs --course_id 43491 --assign_id 155997
+    def get_submissions(self):
+        parser = argparse.ArgumentParser(description="Get a single assignment")
+        parser.add_argument("--course_id", help="Course ID of the class you're trying to access")
+        parser.add_argument("--assign_id", type=int, help="Assignment ID of the assignment you're trying to access")
+        submissions = parser.parse_args(sys.argv[2:])
+        print("Course id: " + str(submissions.course_id) + ", assignment id: " + str(submissions.assign_id))
+        subs = get_submissions(submissions.course_id,submissions.assign_id)
+        for sub in subs:
+            print(sub)
+        #sub = get_submission(int(submission.course_id),int(submission.assign_id),int(submission.user_id))
+
+# python graderbot.py get_ungraded_submissions --course_id 43491 --assign_id 155997
+    def get_ungraded_submissions(self):
+        parser = argparse.ArgumentParser(description="Get a single assignment")
+        parser.add_argument("--course_id", help="Course ID of the class you're trying to access")
+        parser.add_argument("--assign_id", type=int, help="Assignment ID of the assignment you're trying to access")
+        submissions = parser.parse_args(sys.argv[2:])
+        subs = get_submissions(submissions.course_id,submissions.assign_id)
+        ungraded_submissions = []
+        for sub in subs:
+            if(submission_is_graded(sub)==False):
+                ungraded_submissions.append(sub)
+        for ungraded in ungraded_submissions:
+            print(ungraded)
+
+# python graderbot.py get_ungraded_assignments --course_id 43491
+# currently broken
+    def get_ungraded_assignments(self):
+        parser = argparse.ArgumentParser(description="Get a single assignment")
+        parser.add_argument("--course_id", help="Course ID of the class you're trying to access")
+        submissions = parser.parse_args(sys.argv[2:])
+        assignments = get_ungraded_assignments(submissions.course_id)
+        for assign in assignments:
+            print(assign)
+
+# python graderbot.py submission_is_resubmission --course_id 43491 --assign_id 155997 --user_id 24388
+    def submission_is_graded(self):
+        parser = argparse.ArgumentParser(description="Get a single assignment")
+        parser.add_argument("--course_id", help="Course ID of the class you're trying to access")
+        parser.add_argument("--assign_id", type=int, help="Assignment ID of the assignment you're trying to access")
+        parser.add_argument("--user_id", type=int,help="User ID of the student whose work you're trying to access")
+        submission = parser.parse_args(sys.argv[2:])
+        print("Course id: " + str(submission.course_id) + ", assignment id: " + str(submission.assign_id) + ", user id: " + str(submission.user_id))
+        sub = get_submission(int(submission.course_id),int(submission.assign_id),int(submission.user_id))
+        print("Is submission from user id " + str(submission.user_id) + " for assignment id " + str(submission.assign_id)
+              + " for course id " + str(submission.course_id) + " graded?: " + str(submission_is_graded(sub)))
+
+# python graderbot.py submission_is_resubmission --course_id 43491 --assign_id 155997 --user_id 24388
+    def submission_is_resubmission(self):
+        parser = argparse.ArgumentParser(description="Get a single assignment")
+        parser.add_argument("--course_id", help="Course ID of the class you're trying to access")
+        parser.add_argument("--assign_id", type=int, help="Assignment ID of the assignment you're trying to access")
+        parser.add_argument("--user_id", type=int,help="User ID of the student whose work you're trying to access")
+        submission = parser.parse_args(sys.argv[2:])
+        print("Course id: " + str(submission.course_id) + ", assignment id: " + str(submission.assign_id) + ", user id: " + str(submission.user_id))
+        sub = get_submission(int(submission.course_id),int(submission.assign_id),int(submission.user_id))
+        print("Is submission from user id " + str(submission.user_id) + " for assignment id " + str(submission.assign_id)
+              + " for course id " + str(submission.course_id) + " a resubmission?: " + str(submission_is_resubmission(sub)))
+
 if __name__ == "__main__":
     GraderBot()
 
