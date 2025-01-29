@@ -29,10 +29,6 @@ def get_assignments(course_id):
     course = get_course(course_id)
     return course.get_assignments()
 
-def get_ungraded_assignments(course_id):
-    course = get_course(course_id)
-    return course.get_assignments(bucket='ungraded')
-
 def get_submission(course_id,assign_id, user_id):
     course = get_course(course_id)
     assignment = course.get_assignment(assign_id)
@@ -43,24 +39,34 @@ def get_submissions(course_id, assign_id):
     assignment = course.get_assignment(assign_id)
     return assignment.get_submissions()
 
-def get_ungraded_submissions(assignment):
-    submissions = assignment.get_submissions()
-    ungraded = []
-    for sub in submissions:
-        if(submission_is_graded(sub)==True):
-            ungraded.append(sub)
-    return ungraded
+# def get_ungraded_subs(course_id,assignment_id):
+#     course = get_course(course_id)
+#     assignment = course.get_assignment(assignment_id)
+#     submissions = assignment.get_submissions()
+#     ungraded = []
+#     for sub in submissions:
+#         if(submission_is_graded(sub)==False):
+#             ungraded.append(sub)
+#             print("in helper: " + str(sub))
+#     return ungraded
 
-def grade_submission(submission, score, comment):
-    submission.edit(submission={'posted_grade': score})
+def grade_sub(submission, score, comment):
+    submission.edit(submission={'posted_grade': score},submission={'comment':comment})
+    submission.edit(comment={'text_comment': f"Attempt {submission.attempt} grade: {score}"})
 
 def submission_is_graded(submission: Submission):
-        return submission.grade and submission.grade_matches_current_submission
+    return submission.grade and submission.grade_matches_current_submission
 
 def submission_is_resubmission(submission: Submission):
     return submission.attempt > 1
 
 def get_ungraded_submissions(assignment: Assignment):
+    submissions = assignment.get_submissions()
+    return [s for s in submissions if not submission_is_graded(s)]
+
+def get_ungraded_subs(course_id, assignment_id):
+    course = get_course(course_id)
+    assignment = course.get_assignment(assignment_id)
     submissions = assignment.get_submissions()
     return [s for s in submissions if not submission_is_graded(s)]
 

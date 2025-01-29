@@ -1,5 +1,5 @@
 # from CanvasAPI import grade_assignment, get_submission, extract_zip, get_submissions, get_assignments, 
-from CanvasHelper import get_course, get_assignment, get_assignments, get_ungraded_assignments, get_submission, get_submissions, get_ungraded_submissions, grade_submission, submission_is_graded, submission_is_resubmission
+from CanvasHelper import get_course, get_assignment, get_assignments, get_submission, get_submissions, get_ungraded_subs, grade_sub, submission_is_graded, submission_is_resubmission
 
 import argparse
 import sys
@@ -12,6 +12,8 @@ import random
 
 # Takes in a list of words and turns them back
 # into a string
+
+
 def make_comment(my_list):
     comment = my_list[0]
     for i in range(1,len(my_list)):
@@ -126,23 +128,9 @@ class GraderBot(object):
         parser.add_argument("--course_id", help="Course ID of the class you're trying to access")
         parser.add_argument("--assign_id", type=int, help="Assignment ID of the assignment you're trying to access")
         submissions = parser.parse_args(sys.argv[2:])
-        subs = get_submissions(submissions.course_id,submissions.assign_id)
-        ungraded_submissions = []
+        subs = get_ungraded_subs(submissions.course_id,submissions.assign_id)
         for sub in subs:
-            if(submission_is_graded(sub)==False):
-                ungraded_submissions.append(sub)
-        for ungraded in ungraded_submissions:
-            print(ungraded)
-
-# python graderbot.py get_ungraded_assignments --course_id 43491
-# currently broken
-    def get_ungraded_assignments(self):
-        parser = argparse.ArgumentParser(description="Get a single assignment")
-        parser.add_argument("--course_id", help="Course ID of the class you're trying to access")
-        submissions = parser.parse_args(sys.argv[2:])
-        assignments = get_ungraded_assignments(submissions.course_id)
-        for assign in assignments:
-            print(assign)
+            print("in bot: " + str(sub))
 
 # python graderbot.py submission_is_resubmission --course_id 43491 --assign_id 155997 --user_id 24388
     def submission_is_graded(self):
@@ -167,6 +155,20 @@ class GraderBot(object):
         sub = get_submission(int(submission.course_id),int(submission.assign_id),int(submission.user_id))
         print("Is submission from user id " + str(submission.user_id) + " for assignment id " + str(submission.assign_id)
               + " for course id " + str(submission.course_id) + " a resubmission?: " + str(submission_is_resubmission(sub)))
+
+# python graderbot.py grade_submission --course_id 43491 --assign_id 155997 --user_id 24388 --score 4 --comment good job
+    def grade_submission(self):
+        parser = argparse.ArgumentParser(description="Get a single assignment")
+        parser.add_argument("--course_id", type=int, help="Course ID of the class you're trying to access")
+        parser.add_argument("--assign_id", type=int, help="Assignment ID of the assignment you're trying to access")
+        parser.add_argument("--user_id", type=int,help="User ID of the student whose work you're trying to access")
+        parser.add_argument("--score",type=int,help="The raw score you're trying to give to the submission")
+        parser.add_argument("--comment",nargs="+",type=str,help="Comment you're giving to the submission")
+        grade = parser.parse_args(sys.argv[2:])
+        course = get_course(grade.course_id)
+        assignment = course.get_assignment(grade.assign_id)
+        submission = assignment.get_submission(grade.user_id)
+        grade_sub(submission,grade.score,make_comment(grade.comment))
 
 if __name__ == "__main__":
     GraderBot()
