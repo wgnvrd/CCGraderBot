@@ -7,10 +7,12 @@ from random import randint
 import junitparser
 import configparser
 
-from CanvasHelper import grade_submission, get_submission#, extract_zip#, get_submissions
+from CanvasHelper import (
+    grade_submission, 
+    get_submission,
+    get_ungraded_submissions
+)
 from canvasapi import Canvas
-from canvasapi.assignment import Assignment
-from canvasapi.submission import Submission
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -23,23 +25,21 @@ class Autograder():
         self.course = self.canvas.get_course(course_id)
         self.ungraded_assignments = set()
     
-    def get_ungraded_assignments(self):
-        pass
+    # def submission_is_graded(self, submission: Submission):
+    #     return submission.grade and submission.grade_matches_current_submission
     
-    def submission_is_graded(self, submission: Submission):
-        return submission.grade and submission.grade_matches_current_submission
-    
-    def submission_is_resubmission(self, submission: Submission):
-        return submission.attempt > 1
+    # def submission_is_resubmission(self, submission: Submission):
+    #     return submission.attempt > 1
 
-    def get_ungraded_submissions(self, assignment: Assignment):
-        submissions = assignment.get_submissions()
-        return [s for s in submissions if not self.submission_is_graded(s)]
+    # def get_ungraded_submissions(self, assignment: Assignment):
+    #     submissions = assignment.get_submissions()
+    #     return [s for s in submissions if not self.submission_is_graded(s)]
 
-    def get_ungraded_assignments(self):
-        assignments = self.course.get_assignments()
-
-        
+    # def get_ungraded_assignments(self):
+    #     assignments = self.course.get_assignments()
+    #     ungraded_submissions = []
+    #     for assignment in assignments:
+    #         ungraded_submissions += self.get_ungraded_submissions(assignment)
 
     def poll(self, condition, interval: float):
         while True:
@@ -53,13 +53,14 @@ class Autograder():
         while True:
             print("Looking for ungraded assignments...")
             assignment = self.course.get_assignment(assignment_id)
-            ungraded_submissions = self.poll(lambda: self.get_ungraded_submissions(assignment=assignment), interval=10)
+            ungraded_submissions = self.poll(lambda: get_ungraded_submissions(assignment=assignment), interval=10)
             for submission in ungraded_submissions:
                 print("Downloading attachments...")
                 for attachment in submission.attachments:
                     path = dest / attachment.display_name
                     if not path.exists():
                         attachment.download(path)
+                    # Test would probably be run here
                 print("Assigning automatic grade to submission")
                 score = randint(1, 4)
                 submission.edit(submission={'posted_grade': score}, comment={'text_comment': f"Attempt {submission.attempt} grade: {score}"})

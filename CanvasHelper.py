@@ -5,6 +5,8 @@ import zipfile
 import io
 
 from canvasapi import Canvas
+from canvasapi.submission import Submission
+from canvasapi.assignment import Assignment
 
 load_dotenv()
 # Canvas API URL
@@ -35,6 +37,16 @@ def get_submission(assignment, user_id):
 
 def grade_submission(submission, score, comment):
     submission.edit(submission={'posted_grade': score})
+
+def submission_is_graded(submission: Submission):
+        return submission.grade and submission.grade_matches_current_submission
+
+def submission_is_resubmission(submission: Submission):
+    return submission.attempt > 1
+
+def get_ungraded_submissions(assignment: Assignment):
+    submissions = assignment.get_submissions()
+    return [s for s in submissions if not submission_is_graded(s)]
 
     # load_dotenv()
 
