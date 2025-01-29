@@ -8,20 +8,14 @@ import junitparser
 import configparser
 
 from CanvasHelper import (
+    get_canvas_api,
     grade_submission, 
-    get_submission,
     get_ungraded_submissions
 )
-from canvasapi import Canvas
-from dotenv import load_dotenv
-
-load_dotenv()
-API_KEY = os.getenv("CANVAS_ACCESS_TOKEN")
-API_URL = "https://canvas.coloradocollege.edu/"
 
 class Autograder():
     def __init__(self, course_id):
-        self.canvas = Canvas(API_URL, API_KEY)
+        self.canvas = get_canvas_api()
         self.course = self.canvas.get_course(course_id)
         self.ungraded_assignments = set()
     
@@ -35,36 +29,47 @@ class Autograder():
     #     submissions = assignment.get_submissions()
     #     return [s for s in submissions if not self.submission_is_graded(s)]
 
-    # def get_ungraded_assignments(self):
-    #     assignments = self.course.get_assignments()
-    #     ungraded_submissions = []
-    #     for assignment in assignments:
-    #         ungraded_submissions += self.get_ungraded_submissions(assignment)
+    def get_ungraded_assignment_submissions(self):
+        """
+        Checks all open assignments for ungraded submissions.
+        """
+        assignments = self.course.get_assignments()
+        ungraded_submissions = []
+        for assignment in assignments:
+            ungraded_submissions += get_ungraded_submissions(assignment)
+        return ungraded_submissions
+        
 
-    def poll(self, condition, interval: float):
+    def poll(self, func, condition=lambda x: x, interval: float=10):
+        """
+        Given a function 
+        """
         while True:
-            value = condition()
-            if value:
+            value = func()
+            if condition(value):
                 return value
             time.sleep(interval)
 
-    def poll_canvas(self, assignment_id):
+    def poll_canvas(self):
         dest = Path('testing/downloads/')
         while True:
             print("Looking for ungraded assignments...")
-            assignment = self.course.get_assignment(assignment_id)
-            ungraded_submissions = self.poll(lambda: get_ungraded_submissions(assignment=assignment), interval=10)
+            # assignment = self.course.get_assignment(assignment_id)
+            ungraded_submissions = self.poll(lambda: self.get_ungraded_assignment_submissions())
             for submission in ungraded_submissions:
-                print("Downloading attachments...")
-                for attachment in submission.attachments:
-                    path = dest / attachment.display_name
-                    if not path.exists():
-                        attachment.download(path)
-                    # Test would probably be run here
-                print("Assigning automatic grade to submission")
-                score = randint(1, 4)
-                submission.edit(submission={'posted_grade': score}, comment={'text_comment': f"Attempt {submission.attempt} grade: {score}"})
-
+                print(submission)
+            
+                # print("Downloading attachments...")
+                # for attachment in submission.attachments:
+                #     path = dest / attachment.display_name
+                #     if not path.exists():
+                #         attachment.download(path)
+                #     # Test would probably be run here
+                # print("Assigning automatic grade to submission")
+                # score = randint(1, 4)
+                # submission.edit(submission={'posted_grade': score}, comment={'text_comment': f"Attempt {submission.attempt} grade: {score}"})
+        
+        
             
 #Example of Grading from a file
 """ 
@@ -90,8 +95,8 @@ def grade(userId, configFile):
 
     
     #Verify Directory
-    sub = get_submission(course_id, assign_id, userId)["attachments"][0]["url"]
-    extract_zip(sub)
+    # sub = get_submission(course_id, assign_id, userId)["attachments"][0]["url"]
+    # extract_zip(sub)
     if not os.path.isdir(os.path.join('testing',values['FileName'])):
         score = 0
         comment = "Improper Directory Structure/Name"
@@ -137,4 +142,4 @@ def writeConfig(courseId, assignId, testFilePath, language):
 
 if __name__ == "__main__":
     autograder = Autograder(43491)
-    autograder.poll_canvas(155997)
+    autograder.poll_canvas()

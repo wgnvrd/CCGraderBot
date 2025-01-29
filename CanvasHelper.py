@@ -18,6 +18,9 @@ API_KEY = os.getenv("CANVAS_ACCESS_TOKEN")
 # Initialize a new Canvas object
 canvas = Canvas(API_URL, API_KEY)
 
+def get_canvas_api():
+    return canvas
+
 def get_course(course_id):
     return canvas.get_course(course_id)
 
