@@ -54,7 +54,7 @@ def get_submissions(course_id, assign_id):
 #     return ungraded
 
 def grade_sub(submission, score, comment):
-    submission.edit(submission={'posted_grade': score},submission={'comment':comment})
+    submission.edit(submission={'posted_grade': score})
     submission.edit(comment={'text_comment': f"Attempt {submission.attempt} grade: {score}"})
 
 def submission_is_graded(submission: Submission):
