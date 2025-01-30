@@ -1,7 +1,8 @@
 import argparse
 import configparser, os, pathlib, junitparser
 import subprocess
-from CanvasHelper import get_submission, get_assignment, get_course, grade_submission
+from CanvasHelper import get_submission, get_assignment, get_course, grade_sub
+from zipfile import ZipFile 
 
 class Autograder():
     def __init__(self, course_id):
@@ -39,20 +40,38 @@ def grade(userId, configFile):
 
 
     #Our extract code isn't working for me right now? I'm assuming its in development
+    sub = get_submission(course_id, assign_id, userId)
+    for attachment in sub.attachments:
+        path = 'testing\\' + attachment.display_name
+        
+        print("Downloading attachments...")
+        attachment.download(path)
 
-    #Right here is where we would run whatever testing file is in the config 
-    #I'm just gonna hard code the score/comment that would return for this example
+    with ZipFile(path) as zip:
+        zip.extractall( path = ".\\testing")
 
-    """
     #Verify Directory
-    sub = get_submission(get_assignment(get_course(course_id), assign_id), userId)["attachments"][0]["url"]
-    extract_zip(sub)
-    if not os.path.isdir(os.path.join('testing',values['FileName'])):
+    dirCheck = True
+    if not os.path.isdir(os.path.join('testing',values['DirectoryName'])):
         score = 0
-        comment = "Improper Directory Structure/Name"
+        comment += "Missing Directory Name: first_assignment"
+        grade_sub(get_submission(course_id, assign_id,userId),score, comment)
+        os.remove(path)
+        return -1
     else:
-        score +=1
-        """
+        filePaths = config["DEFAULT"]["MandatoryFiles"]
+        for p in filePaths.split():
+            if not os.path.exists(os.path.join('.\\testing',p)):
+                comment += "\nMissing File: " + p
+                dirCheck = False
+    if not dirCheck:
+        grade_sub(get_submission(course_id, assign_id,userId),score, comment)
+        os.remove(path)
+        os.remove(os.path.join("testing", values['DirectoryName']))
+        return -1
+            
+    score +=1
+    
     
     #First compile the Junit test
     
@@ -80,10 +99,8 @@ def grade(userId, configFile):
 
     for val in Scores.values():
         score += val
-    print(comment)
-    print(Scores)
-    print(score)
-    grade_submission(get_submission(get_assignment(get_course(course_id), assign_id),userId),score, comment)
+    os.remove(path)
+    grade_sub(get_submission(course_id, assign_id,userId),score, comment)
 
 def writeConfig(courseId, assignId, testFilePath, language):
     config = configparser.ConfigParser()
