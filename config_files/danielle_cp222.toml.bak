@@ -9,7 +9,7 @@
     # configurable piece is sequence of tests; 
         # stop testing if fail
 
-[DEFAULT]
+[default]
 course_id = 43491
 course_name = "Danielle’s CP222"
 module_name = "cp222/2023_block2"
@@ -18,7 +18,8 @@ unit_test_dir = "/packages/mcscn/cp222/2023b2_cp222/bin"
 [155997] # Autograder will retrieve testing configuration using the assignment ID
 assignment_name = "Recall Java"
 [155997.pipeline] # Optional section. If not included, Autograder will take no action on student submissions for the assignment.
+input = "first_assignment.zip"
 steps = [ 
     { type = "directory", paths = ["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"] },
-    { type = "unit-tests", language = "java", paths = ["test_first_assignment"] }
+    { type = "unit-tests", language = "java", path = "test_first_assignment" }
 ]

@@ -7,7 +7,8 @@ import tomlkit
 
 from CanvasHelper import canvas
 
-CONFIG_DIR = Path("/home/i_wagenvoord/autograder/")
+# CONFIG_DIR = Path("/home/i_wagenvoord/autograder/")
+CONFIG_DIR = Path("./config_files")
 
 if not CONFIG_DIR.exists():
     CONFIG_DIR.mkdir(parents=True, exist_ok=True)
@@ -101,11 +102,11 @@ class ConfigHandler():
             # TODO: If config file already exists, just add new assignments that aren't yet in the file?
             pass
 
-    def read_course_defaults(self, course: course):
+    def get_course_defaults(self, course: course):
         doc = self.get_course_config_file(course)
         return dict(doc)["default"]
 
-    def read_assignment_config(self, course: course, assign_id: int):
+    def get_assignment_config(self, course: course, assign_id: int):
         """
         Read associated course file and return appropriate assignment config
         """
@@ -122,5 +123,5 @@ if __name__ == "__main__":
     course = canvas.get_course(43491)
     ch = ConfigHandler()
     ch.generate_course_config(course)
-    print(ch.read_assignment_config(course, 155997))
-    print(ch.read_course_defaults(course))
+    print(ch.get_assignment_config(course, 155997))
+    print(ch.get_course_defaults(course))

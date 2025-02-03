@@ -1,0 +1,147 @@
+
+# AUTOGRADING CONFIGURATION FOR Danielle's CP222
+[default]
+course-id = 43491
+course-name = "Danielle's CP222"
+module-name = ""
+unit-test-dir = ""
+
+[155997]
+assignment-name = "Recall JAVA"
+
+[155997.pipeline]
+
+[155990]
+assignment-name = "Debugger Maze"
+
+[155990.pipeline]
+
+[155972]
+assignment-name = "DFA Library"
+
+[155972.pipeline]
+
+[155996]
+assignment-name = "Macro Assembler"
+
+[155996.pipeline]
+
+[155991]
+assignment-name = "Exceptional Work"
+
+[155991.pipeline]
+
+[155971]
+assignment-name = "DFA Application"
+
+[155971.pipeline]
+
+[155998]
+assignment-name = "Regular Expressions"
+
+[155998.pipeline]
+
+[155992]
+assignment-name = "JAVA Diagram 1"
+
+[155992.pipeline]
+
+[155993]
+assignment-name = "JAVA Diagram 2"
+
+[155993.pipeline]
+
+[155994]
+assignment-name = "JAVA Diagram 3"
+
+[155994.pipeline]
+
+[155995]
+assignment-name = "JAVA Diagram 4"
+
+[155995.pipeline]
+
+[155973]
+assignment-name = "Day 1"
+
+[155973.pipeline]
+
+[155982]
+assignment-name = "Day 2"
+
+[155982.pipeline]
+
+[155983]
+assignment-name = "Day 3"
+
+[155983.pipeline]
+
+[155984]
+assignment-name = "Day 4"
+
+[155984.pipeline]
+
+[155985]
+assignment-name = "Day 5"
+
+[155985.pipeline]
+
+[155986]
+assignment-name = "Day 6"
+
+[155986.pipeline]
+
+[155987]
+assignment-name = "Day 7"
+
+[155987.pipeline]
+
+[155988]
+assignment-name = "Day 8"
+
+[155988.pipeline]
+
+[155989]
+assignment-name = "Day 9"
+
+[155989.pipeline]
+
+[155974]
+assignment-name = "Day 10"
+
+[155974.pipeline]
+
+[155975]
+assignment-name = "Day 11"
+
+[155975.pipeline]
+
+[155976]
+assignment-name = "Day 12"
+
+[155976.pipeline]
+
+[155977]
+assignment-name = "Day 13"
+
+[155977.pipeline]
+
+[155978]
+assignment-name = "Day 14"
+
+[155978.pipeline]
+
+[155979]
+assignment-name = "Day 15"
+
+[155979.pipeline]
+
+[155980]
+assignment-name = "Day 16"
+
+[155980.pipeline]
+
+[155981]
+assignment-name = "Day 17"
+
+[155981.pipeline]

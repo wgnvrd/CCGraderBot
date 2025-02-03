@@ -1,10 +1,12 @@
 import os
 import subprocess
 from pathlib import Path
+from textwrap import dedent
 
 from canvasapi.submission import Submission
 
 from CanvasHelper import get_canvas_api
+from ConfigHandler import ConfigHandler
 
 canvas = get_canvas_api()
 """
@@ -15,6 +17,7 @@ Use squeue or some artifact left in the file system to check that the run is com
 class SLURMRunner():
     def __init__(self, dest_dir):
         self.dest_dir = Path(dest_dir)
+        self.ch = ConfigHandler()
 
     def download_attachments(self, s: Submission):
         """
@@ -36,16 +39,36 @@ class SLURMRunner():
         for attachment in s.attachments:
             attachment.download(download_path / attachment.display_name)
 
+    def get_slurm_script_path(self, s: Submission):
+        return f"autograde-{s.course_id}-{s.assignment_id}.slurm"
+
     def generate_slurm_script(self, s: Submission):
         """
-        Generate a SLURM script.
+        Generate a SLURM script template.
         Output scripts will have format assignment_name-user_id-attempt_number-job_number.out 
         Ideally Canvas grading will be based on SLURM output.
         Tests will be run within SLURM.
         Output for grading can be logged in a separate file based on test results.
         This file will be used to assign a score.
         """
-        pass
+        config = self.ch.get_assignment_config()
+        name = f"autograde-{s.course_id}-{s.assignment_id}"
+        unit_tests = config["pipeline"]["steps"][0]["path"] # hard-coded
+        script = f"""
+            #!/bin/bash
+            #SBATCH --job-name={name}-{"{}"}{"{}"}
+            #SBATCH --output=%x.out
+            #SBATCH --nodes=1
+            #SBATCH --ntasks=1
+            #SBATCH --cpus-per-task=1
+            #SBATCH --time=00:01:00
+
+            echo %j
+            module load {config['module-name']}
+            {unit_tests} {config['pipeline']['input']}
+        """
+        with open(f"{name}.slurm", "w") as f:
+            f.write(script)
 
     def get_slurm_script(self, s: Submission):
         """
@@ -80,4 +103,5 @@ if __name__ == "__main__":
     course = canvas.get_course(43491)
     assignment = course.get_assignment(155997)
     submission = assignment.get_submissions()[0]
+    print(submission)
     sr.slurm_deploy(submission)
