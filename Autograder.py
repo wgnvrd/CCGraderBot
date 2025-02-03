@@ -9,6 +9,7 @@ import configparser
 
 from CanvasHelper import (
     get_canvas_api,
+    get_submission,
     grade_submission, 
     get_ungraded_submissions
 )
@@ -127,7 +128,8 @@ def grade(userId, configFile):
         if not fail:
             score += 1
 
-    grade_submission(values["CourseId"], values["AssignId"],userId, score, my_comment=comment)
+    submission = get_submission(values["CourseId"], values["AssignId"],userId)
+    grade_submission(submission, score, my_comment=comment)
 
 def writeConfig(courseId, assignId, testFilePath, language):
     config = configparser.ConfigParser()

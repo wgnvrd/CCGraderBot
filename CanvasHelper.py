@@ -22,6 +22,10 @@ canvas = Canvas(API_URL, API_KEY)
 def get_canvas_api():
     return canvas
 
+# temp to hopefully make the demo work
+def get_submission(course_id, assign_id, userId):
+    return canvas.get_course(course_id).get_assignment(assign_id).get_submission(userId)
+
 # grade a given submission according to the given score and comment
 def grade_submission(submission, score, comment):
     submission.edit(submission={'posted_grade': score}, comment={'text_comment': comment})

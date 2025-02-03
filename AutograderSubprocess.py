@@ -1,7 +1,7 @@
 import argparse
 import configparser, os, pathlib, junitparser
 import subprocess
-from CanvasHelper import get_submission, get_assignment, get_course, grade_sub
+from CanvasHelper import get_submission, grade_submission#,get_assignment, get_course, 
 from zipfile import ZipFile 
 
 class Autograder():
@@ -55,7 +55,7 @@ def grade(userId, configFile):
     if not os.path.isdir(os.path.join('testing',values['DirectoryName'])):
         score = 0
         comment += "Missing Directory Name: first_assignment"
-        grade_sub(get_submission(course_id, assign_id,userId),score, comment)
+        grade_submission(get_submission(course_id, assign_id,userId),score, comment)
         os.remove(path)
         return -1
     else:
@@ -65,7 +65,7 @@ def grade(userId, configFile):
                 comment += "\nMissing File: " + p
                 dirCheck = False
     if not dirCheck:
-        grade_sub(get_submission(course_id, assign_id,userId),score, comment)
+        grade_submission(get_submission(course_id, assign_id,userId),score, comment)
         os.remove(path)
         os.remove(os.path.join("testing", values['DirectoryName']))
         return -1
@@ -100,7 +100,7 @@ def grade(userId, configFile):
     for val in Scores.values():
         score += val
     os.remove(path)
-    grade_sub(get_submission(course_id, assign_id,userId),score, comment)
+    grade_submission(get_submission(course_id, assign_id,userId),score, comment)
 
 def writeConfig(courseId, assignId, testFilePath, language):
     config = configparser.ConfigParser()

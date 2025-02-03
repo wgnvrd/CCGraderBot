@@ -40,6 +40,10 @@ class CLI(object):
 # Gets a course using an input course id
     def gc(self, course_id):
         return self.canvas.get_course(int(course_id))
+
+# Gets assignment groups for a course using an input course id
+    def gag(self,course_id):
+        return self.canvas.get_course(int(course_id)).get_assignment_groups()
     
 # Gets an assignment using an input course id and assignment id 
     def ga(self, course_id, assign_id):
@@ -57,6 +61,16 @@ class CLI(object):
         print("Running get_course")
         course = self.gc(args.course_id)
         print(course)
+
+# python CLI.py get_course_groups --course_id 43491
+    def get_assignment_groups(self):
+        parser = argparse.ArgumentParser(description="Get a single course's groups")
+        parser.add_argument("--course_id", help="Course ID of the class you're trying to access")
+        args = parser.parse_args(sys.argv[2:])
+        print("Running get_course_groups")
+        assignment_groups = self.gag(args.course_id)
+        for group in assignment_groups:
+            print(group)
 
 # python CLI.py get_assignment --course_id 43491 --assign_id 155997
     def get_assignment(self):
@@ -148,6 +162,9 @@ class CLI(object):
         print("Running grade_submission")
         submission = self.gs(args.course_id,args.assign_id,args.user_id)
         grade_submission(submission,args.score,make_comment(args.comment))
+
+# look into pulling assignments by group(i.e. daily's)
+# look into toml file inputs(bottom of autograder has an ini example)
 
 if __name__ == "__main__":
     CLI()
