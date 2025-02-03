@@ -1,4 +1,5 @@
 from pathlib import Path
+from textwrap import dedent
 
 from canvasapi import course
 from slugify import slugify
@@ -6,7 +7,10 @@ import tomlkit
 
 from CanvasHelper import canvas
 
-CONFIG_DIR=Path("/home/i_wagenvoord")
+CONFIG_DIR = Path("/home/i_wagenvoord/autograder/")
+
+if not CONFIG_DIR.exists():
+    CONFIG_DIR.mkdir(parents=True, exist_ok=True)
 
 class ConfigHandler():
     """
@@ -25,6 +29,19 @@ class ConfigHandler():
         path = CONFIG_DIR / "autograder.toml" 
         return path
 
+    def get_config_file(self):
+        """ Get the config file as a TOMLDocument """
+        with open(self.config_file_path, "r") as f:
+            doc = tomlkit.load(f)
+        return doc
+
+    def get_course_config_file(self, course):
+        path = self.get_course_config_path(course)
+        with open(path, "r") as f:
+            doc = tomlkit.load(f)
+        return doc
+
+
     def generate_autograder_config(self):
         """
         Generate a config file for the entire Autograder program. 
@@ -32,61 +49,78 @@ class ConfigHandler():
         doc = tomlkit.document()
         doc.add(tomlkit.comment("Autograder uses this to map from Canvas course IDs to course config files."))
         doc.add(tomlkit.nl())
-        doc["course-configs"] = tomlkit.table()
-        with open(self.config_file_path, "wb") as f:
-            tomlkit.dumps(doc, f)
+        doc.add("course-configs", tomlkit.table())
+        with open(self.config_file_path, "w") as f:
+            s = tomlkit.dumps(doc)
+            f.write(s)
+            # tomlkit.dump(doc, f)
 
-    def add_course_to_autograder_config(self):
-        doc = tomlkit.load(self.config_file_path)
-        course_id = self.course_id
-        fname = f"{slugify(course.name)}-{course_id}.toml"
-        doc["course-configs"][course_id] = fname
-        with open(self.config_file_path, "wb") as f:
+    def add_course_to_autograder_config(self, course: course):
+        doc = self.get_config_file()
+        fname = f"{slugify(course.name)}-{course.id}.toml"
+        doc["course-configs"].add(str(course.id), fname)
+        with open(self.config_file_path, "w") as f:
             tomlkit.dump(doc, f)
 
     def get_course_config_path(self, course: course) -> Path:
         """
         Retrieve corresponding course configuration file using course ID.
         """
-        doc = tomlkit.load(self.config_file_path)
-        fname = doc["course-configs"][course.id]
+        doc = self.get_config_file()
+        if str(course.id) not in doc["course-configs"]: 
+            self.add_course_to_autograder_config(course)
+        doc = self.get_config_file()
+        fname = doc["course-configs"][str(course.id)]
+
         return CONFIG_DIR / fname
 
     def generate_course_config(self, course: course):
         """
-        Generate configuration file for a given course.
+        Generate configuration file for a given course. If the file already exists, update with any new assignments.
         """
         config_path = self.get_course_config_path(course)
+        if not config_path.exists():
+            s = f"""
+            # AUTOGRADING CONFIGURATION FOR {course.name}
+            [default]
+            course-id = {course.id}
+            course-name = "{course.name}"
+            module-name = ""
+            unit-test-dir = ""
+            """
+            s = dedent(s)
+            doc = tomlkit.parse(s)
+            for a in course.get_assignments():
+                doc.add(str(a.id), {
+                        "assignment-name": a.name,
+                        "pipeline": tomlkit.table()
+                    }) 
+            with open(config_path, "w") as f:
+                 tomlkit.dump(doc, f)
+        else:
+            # TODO: If config file already exists, just add new assignments that aren't yet in the file?
+            pass
 
-        s = f"""
-        # AUTOGRADING CONFIGURATION FOR {course.name}
-        [default]
-        course_id = {course.id}
-        course_name = "{course.name}"
-        module_name = ""
-        unit_test_dir = ""
-        """
-        doc = tomlkit.parse(s)
-        assignment_ids = [a.id for a in course.get_assignments()]
-        for assignment_id in assignment_ids:
-            doc.add(str(assignment_id), tomlkit.table()) 
+    def read_course_defaults(self, course: course):
+        doc = self.get_course_config_file(course)
+        return dict(doc)["default"]
 
-        with open(config_path, "wb") as f:
-            tomlkit.dump(doc, f)
-        
-
-    def read_assignment_config(self, assign_id):
+    def read_assignment_config(self, course: course, assign_id: int):
         """
         Read associated course file and return appropriate assignment config
         """
-        pass
+        doc = self.get_course_config_file(course)
+        return dict(doc)[str(assign_id)]
 
     def get_autograded_assignments(self, course_id):
         """
         Return IDs of assignments to be autograded. 
         """
+        pass
 
 if __name__ == "__main__":
     course = canvas.get_course(43491)
     ch = ConfigHandler()
     ch.generate_course_config(course)
+    print(ch.read_assignment_config(course, 155997))
+    print(ch.read_course_defaults(course))
