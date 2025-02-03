@@ -1,0 +1,38 @@
+[DEFAULT]
+Language = Java
+DirectoryName = first_assignment
+MandatoryFiles = first_assignment\test\FirstTest.java first_assignment\src\First.java first_assignment\src\FirstI.java first_assignment\src\FirstException.java first_assignment\src\RunFirst.java
+TestFilePath = first_assignment\test\FirstTest.java
+FilePath = first_assignment\src\*
+CourseId = 43491
+AssignId = 155997
+# course module
+
+[JAVA]
+TestCases = fillArray filename seekLetter
+
+[155997]
+AssignmentName = "Recall JAVA"
+TestFilePath = /home/i_wagenvoord/2023b2_cp222/bin/test_first_assignment
+# grab other things to glue in; pull in code from another directory and merge them
+# importing Danielle's code on student code by unzipping Danielle's code on student code
+    # don't change interface 
+# confiugration:
+    # module name on cluster
+    # feature: did the right files show up, layering things on top 
+    # one or more py files 
+    # download and unzip files; tests will test properties of zip files
+    # configurable piece is sequence of tests; 
+        # stop testing if fail
+
+[DEFAULT]
+course_id = 43491
+course_name = "Danielle’s CP222"
+[155997] # Autograder will retrieve testing configuration using the assignment ID
+language = "Java"
+assignment_name = "Recall Java"
+[155997.pipeline] # Optional section. If not included, Autograder will take no action on student submissions for the assignment.
+steps = [ 
+    { type = "directory", paths = ["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"] },
+    { type = "unit-tests", language = "java", paths = ["first_assignment/test/FirstTest.java"] }
+]

@@ -9,7 +9,7 @@ import configparser
 
 from CanvasHelper import (
     get_canvas_api,
-    grade_submission, 
+    # grade_submission, 
     get_ungraded_submissions
 )
 
@@ -38,7 +38,6 @@ class Autograder():
         for assignment in assignments:
             ungraded_submissions += get_ungraded_submissions(assignment)
         return ungraded_submissions
-        
 
     def poll(self, func, condition=lambda x: x, interval: float=10):
         """
@@ -57,17 +56,18 @@ class Autograder():
             # assignment = self.course.get_assignment(assignment_id)
             ungraded_submissions = self.poll(lambda: self.get_ungraded_assignment_submissions())
             for submission in ungraded_submissions:
-                print(submission)
-            
-                # print("Downloading attachments...")
-                # for attachment in submission.attachments:
-                #     path = dest / attachment.display_name
-                #     if not path.exists():
-                #         attachment.download(path)
+                print(submission) 
+                print("Downloading attachments")
+                for attachment in submission.attachments:
+                    print("Ungraded submission ID", submission.id)
+                    path = dest / attachment.display_name
+                    # if not path.exists():
+                    #     print("Downloading attachments...")
+                    #     attachment.download(path)
                 #     # Test would probably be run here
-                # print("Assigning automatic grade to submission")
-                # score = randint(1, 4)
-                # submission.edit(submission={'posted_grade': score}, comment={'text_comment': f"Attempt {submission.attempt} grade: {score}"})
+                score = randint(1, 4)
+                print(f"Automatically assigning random grade of {score} to submission")
+                submission.edit(submission={'posted_grade': score}, comment={'text_comment': f"Attempt {submission.attempt} grade: {score}"})
         
         
             
