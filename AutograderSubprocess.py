@@ -1,8 +1,11 @@
 import argparse
 import configparser, os, pathlib, junitparser
 import subprocess
-from CanvasHelper import get_submission, get_assignment, get_course, grade_sub
-from zipfile import ZipFile 
+from CanvasHelper import  grade_submission, get_submission
+from zipfile import ZipFile
+
+from SubmissionValidator import checkDirec
+from javaGrader import jgrade 
 
 class Autograder():
     def __init__(self, course_id):
@@ -39,7 +42,8 @@ def grade(userId, configFile):
     Scores = dict([(k, 1) for k in config["JAVA"]["TestCases"].split()])
 
 
-    #Our extract code isn't working for me right now? I'm assuming its in development
+
+    #UNZIP TEST
     sub = get_submission(course_id, assign_id, userId)
     for attachment in sub.attachments:
         path = 'testing\\' + attachment.display_name
@@ -50,57 +54,35 @@ def grade(userId, configFile):
     with ZipFile(path) as zip:
         zip.extractall( path = ".\\testing")
 
-    #Verify Directory
-    dirCheck = True
-    if not os.path.isdir(os.path.join('testing',values['DirectoryName'])):
-        score = 0
-        comment += "Missing Directory Name: first_assignment"
-        grade_sub(get_submission(course_id, assign_id,userId),score, comment)
+    #DIRECTORY CHECK TEST
+    results = checkDirec(values['DirectoryName'],config["DEFAULT"]["MandatoryFiles"].split())
+    print(results)
+    if not results[0]:
+        comment += results[1]
         os.remove(path)
+        grade_submission(get_submission(course_id, assign_id,userId),score, comment)
         return -1
-    else:
-        filePaths = config["DEFAULT"]["MandatoryFiles"]
-        for p in filePaths.split():
-            if not os.path.exists(os.path.join('.\\testing',p)):
-                comment += "\nMissing File: " + p
-                dirCheck = False
-    if not dirCheck:
-        grade_sub(get_submission(course_id, assign_id,userId),score, comment)
-        os.remove(path)
-        os.remove(os.path.join("testing", values['DirectoryName']))
-        return -1
-            
-    score +=1
+    score += 1
+
     
-    
-    #First compile the Junit test
-    
-    #Hardcoded Compile for now -- format is "javac" "-d" "*OUTPUT_DIRECTORY*" "-cp" "JARFILE" "FILESTOBECOMPILED"
-    subprocess.run(["javac","-d", "out", "-cp", "lib\junit-platform-console-standalone-1.11.4.jar",testPath,srcFiles])
-    subprocess.run(['java', '-jar', '.\lib\junit-platform-console-standalone-1.11.4.jar', 'execute', '--class-path', '.\\out\\', '--scan-class-path', '--reports-dir=results'])
-                    
-    data = junitparser.JUnitXml.fromfile(os.path.join("results", "TEST-junit-jupiter.xml"))
-    for case in data:
-        category = case.system_out.split()[-1]
+    #UNIT TESTS
+    match(values["Language"]):
+        case "Java":
+            results = jgrade(testPath,srcFiles,Scores)
+        case "Python":
+            results
+        case "_":
+            print("Error: Language not properly configured or supported")
+            return -1
         
-        if category not in Scores.keys():
-            comment+= "Error " + case.name + "not testable: " + category + "\n"
-        else:
-            if case.result:
-                if isinstance(case.result[0], junitparser.Failure):
-                    comment += "\n FAILURE: "+ case.name + "\n"
-                    Scores[category] = 0
-                elif isinstance(case.result[0], junitparser.Error):
-                    comment += "\n ERROR: "+ case.name + "\n"
-                    Scores[category] = 0
+    score += results[0]
+    comment += results[1]
 
-            else:
-                comment += "\n SUCCESS: " + case.name + "\n"
+    #END TO END TESTS GO HERE
 
-    for val in Scores.values():
-        score += val
+
     os.remove(path)
-    grade_sub(get_submission(course_id, assign_id,userId),score, comment)
+    grade_submission(get_submission(course_id, assign_id,userId),score, comment)
 
 def writeConfig(courseId, assignId, testFilePath, language):
     config = configparser.ConfigParser()
@@ -113,4 +95,4 @@ def writeConfig(courseId, assignId, testFilePath, language):
     config.write(open(os.path.join('config_files', "testCon.ini"),'w'))
 
 
-    
+
