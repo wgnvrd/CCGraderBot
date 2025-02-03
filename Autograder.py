@@ -14,6 +14,7 @@ from CanvasHelper import (
     get_ungraded_submissions
 )
 
+
 class Autograder():
     def __init__(self, course_id):
         self.canvas = get_canvas_api()

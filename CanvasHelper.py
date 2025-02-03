@@ -120,3 +120,5 @@ def get_ungraded_submissions(assignment: Assignment):
 
 def get_submission(course_id, assign_id, userId):
     return canvas.get_course(course_id).get_assignment(assign_id).get_submission(userId)
+
+print(canvas.get_courses(enrollment_type="teacher")[0].name)
