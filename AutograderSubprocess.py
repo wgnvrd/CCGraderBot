@@ -1,7 +1,8 @@
 import argparse
 import configparser, os, pathlib, junitparser
+import time
 import subprocess
-from CanvasHelper import  grade_submission, get_submission
+from CanvasHelper import  get_canvas_api, get_ungraded_submissions, grade_submission, get_submission
 from zipfile import ZipFile
 
 from SubmissionValidator import checkDirec
@@ -56,7 +57,6 @@ def grade(userId, configFile):
 
     #DIRECTORY CHECK TEST
     results = checkDirec(values['DirectoryName'],config["DEFAULT"]["MandatoryFiles"].split())
-    print(results)
     if not results[0]:
         comment += results[1]
         os.remove(path)
@@ -77,12 +77,53 @@ def grade(userId, configFile):
         
     score += results[0]
     comment += results[1]
-
+    return score, comment
     #END TO END TESTS GO HERE
 
 
     os.remove(path)
     grade_submission(get_submission(course_id, assign_id,userId),score, comment)
+
+
+def poll(func, condition=lambda x: x, interval: float=10):
+    """
+    Given a function 
+    """
+    while True:
+        value = func()
+        if condition(value):
+            return value
+        time.sleep(interval)
+def get_ungraded_assignment_submissions():
+    """
+    Checks all open assignments for ungraded submissions.
+    """
+    can = get_canvas_api()
+    course = can.get_course(43491)
+    assignments = course.get_assignments()
+    ungraded_submissions = []
+    for assignment in assignments:
+        ungraded_submissions += get_ungraded_submissions(assignment)
+    return ungraded_submissions
+def poll_canvas():
+    dest = pathlib.Path('testing/downloads/')
+    while True:
+        print("Looking for ungraded assignments...")
+        # assignment = self.course.get_assignment(assignment_id)
+        ungraded_submissions = poll(lambda: get_ungraded_assignment_submissions())
+        for submission in ungraded_submissions: 
+            score, comment = grade(submission.user_id, 'config_files\Recall.ini')
+            #for attachment in submission.attachments:
+             #   print("Ungraded submission ID", submission.id)
+              #  path = dest / attachment.display_name
+                    # if not path.exists():
+                    #     print("Downloading attachments...")
+                    #     attachment.download(path)
+                #     # Test would probably be run here
+                
+            submission.edit(submission={'posted_grade': score}, comment={'text_comment': comment})
+       
+
 
 def writeConfig(courseId, assignId, testFilePath, language):
     config = configparser.ConfigParser()
