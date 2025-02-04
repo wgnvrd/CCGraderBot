@@ -3,9 +3,10 @@ class TestModule():
     All testing modules should subclass this module. Each instantiation of a test
     module should keep track of its own score and feedback output.
     """
-    def __init__(self):
+    def __init__(self, max_score):
         self.score = 0 
         self.feedback = ""
+        self.max_score = max_score # may or may not be useful in certain modules
         # Setting this to true should prevent accidental accumulation of scores?
         self.testingDone = False 
 
