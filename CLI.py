@@ -67,7 +67,7 @@ class CLI(object):
         parser = argparse.ArgumentParser(description="Get a single course's groups")
         parser.add_argument("--course_id", help="Course ID of the class you're trying to access")
         args = parser.parse_args(sys.argv[2:])
-        print("Running get_course_groups")
+        print("Running get_assignment_groups")
         assignment_groups = self.gag(args.course_id)
         for group in assignment_groups:
             print(group)
