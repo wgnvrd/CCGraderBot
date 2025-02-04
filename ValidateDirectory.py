@@ -1,0 +1,34 @@
+from typing import List
+from pathlib import Path
+
+from test_module import TestModule
+from test_result_enums import TestResult
+
+class ValidateDirectory(TestModule):
+    def __init__(self, max_score: int, root: Path, paths: List[Path]):
+        super().__init__(max_score)
+        self.paths = [root / p for p in paths]
+
+    def run(self):
+        for p in self.paths:
+            if not p.exists():
+                self.testing_done = True
+                self.feedback += f"{p} does not exist. Aborting."
+                self.score = 0
+                self.result = TestResult.FAIL
+                return self.result
+            self.feedback += f"{p} exists\n"
+        self.score = self.max_score
+        self.result = TestResult.PASS
+        self.feedback += "PASSED"
+        return self.result
+
+if __name__ == "__main__":
+    vd = ValidateDirectory(2, 
+    Path("C:\\Users\\isabe\\Documents\\repos\\cc-grader-bot\\testing\\downloads\\first_assignment\\first_assignment"), 
+    [Path(p) for p in ["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"]]
+    )
+    vd.run()
+    print(vd.get_score())
+    print(vd.get_feedback())
+    print(vd.result)

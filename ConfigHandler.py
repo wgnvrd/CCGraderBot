@@ -42,7 +42,6 @@ class ConfigHandler():
             doc = tomlkit.load(f)
         return doc
 
-
     def generate_autograder_config(self):
         """
         Generate a config file for the entire Autograder program. 
