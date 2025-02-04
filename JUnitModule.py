@@ -5,9 +5,10 @@ import junitparser
 
 from pathlib import Path
 
+from glob import glob
 # remove this later
 import configparser
-from TestModule import TestModule
+from test_module import TestModule
 from CanvasHelper import get_submission
 from zipfile import ZipFile
 
@@ -25,13 +26,15 @@ class JUnitModule(TestModule):
         return self.feedback
     
     def run(self):
+        # source_dir = Path("./testing/first_assignment/src/")
+        # files = " ".join(str(p) for p in source_dir.glob("*"))
+
+        
+        files = glob(self.source)
         #Compile Code
-        subprocess.run(["javac","-d", "out", "-cp", "lib\junit-platform-console-standalone-1.11.4.jar",self.test,self.source])
-        print("compiled code")
+        subprocess.run(["javac","-d", "out", "-cp", os.path.join("lib","junit-platform-console-standalone-1.11.4.jar"),self.test,*files])# self.source])
         #Run Code
-        subprocess.run(['java', '-jar', '.\lib\junit-platform-console-standalone-1.11.4.jar', 'execute', '--class-path', '.\\out\\', '--scan-class-path', '--reports-dir=results'])
-        print("run code")
-        print(os.getcwd())
+        subprocess.run(['java', '-jar', os.path.join("lib","junit-platform-console-standalone-1.11.4.jar"), 'execute', '--class-path', './out/', '--scan-class-path', '--reports-dir=results'])
         data = junitparser.JUnitXml.fromfile(os.path.join("results", "TEST-junit-jupiter.xml"))
         commentDict = {key: [] for key in list(self.Scores.keys())}
         for case in data:
@@ -60,9 +63,8 @@ class JUnitModule(TestModule):
             self.score += val
 
 if __name__ == "__main__":
-    print("start")
     config = configparser.ConfigParser()
-    config.read('config_files/Recall.ini')
+    config.read(os.path.join("config_files","Recall.ini"))
     values = config['DEFAULT']
     course_id = values["CourseId"]
     assign_id = values['AssignId']
@@ -70,22 +72,17 @@ if __name__ == "__main__":
     sub = get_submission(course_id, assign_id, userId=24388)
     for attachment in sub.attachments:
         print(attachment.display_name)
-        path = 'testing\\' + attachment.display_name
+        path = os.path.join('testing', attachment.display_name)
         
         print("Downloading attachments...")
         attachment.download(path)
-        print(path)
 
     with ZipFile(path) as zip:
         print(os.getcwd())
         zip.extractall(Path("testing"))
     
-    testPath = "testing\\" + values["TestFilePath"]
-    print(testPath)
-    srcFiles = "testing\\" + values["FilePath"]
-    print(srcFiles)
+    testPath = os.path.join("./testing", values["TestFilePath"])
+    srcFiles = os.path.join("./testing", values["FilePath"])
     jum = JUnitModule(testPath,srcFiles,dict([(k, 1) for k in config["JAVA"]["TestCases"].split()]),4)
-    print(str(jum.get_score()) + ", " + str(jum.get_feedback()))
-    print("made jum")
     jum.run()
-    print(jum.get_score(),jum.get_feedback())      
+    print(str(jum.get_score()) + " points\nFeedback:\n" + str(jum.get_feedback()))      

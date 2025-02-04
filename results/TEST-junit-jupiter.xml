@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="JUnit Jupiter" tests="11" skipped="0" failures="2" errors="3" time="0.033" hostname="Kazus-MacBook-Air-3.local" timestamp="2025-02-04T12:10:54">
+<properties>
+<property name="file.encoding" value="UTF-8"/>
+<property name="file.separator" value="/"/>
+<property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+<property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+<property name="java.class.path" value="lib/junit-platform-console-standalone-1.11.4.jar"/>
+<property name="java.class.version" value="61.0"/>
+<property name="java.home" value="/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"/>
+<property name="java.io.tmpdir" value="/var/folders/1_/k7dfsx2n4_g4nh2vrgb3s1w40000gn/T/"/>
+<property name="java.library.path" value="/Users/kazushimotake/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
+<property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+<property name="java.runtime.version" value="17.0.1+12-LTS"/>
+<property name="java.specification.name" value="Java Platform API Specification"/>
+<property name="java.specification.vendor" value="Oracle Corporation"/>
+<property name="java.specification.version" value="17"/>
+<property name="java.vendor" value="Azul Systems, Inc."/>
+<property name="java.vendor.url" value="http://www.azul.com/"/>
+<property name="java.vendor.url.bug" value="http://www.azul.com/support/"/>
+<property name="java.vendor.version" value="Zulu17.30+15-CA"/>
+<property name="java.version" value="17.0.1"/>
+<property name="java.version.date" value="2021-10-19"/>
+<property name="java.vm.compressedOopsMode" value="Zero based"/>
+<property name="java.vm.info" value="mixed mode, sharing"/>
+<property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+<property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+<property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+<property name="java.vm.specification.version" value="17"/>
+<property name="java.vm.vendor" value="Azul Systems, Inc."/>
+<property name="java.vm.version" value="17.0.1+12-LTS"/>
+<property name="jdk.debug" value="release"/>
+<property name="junit.docs.version" value="1.11.4"/>
+<property name="line.separator" value="&#10;"/>
+<property name="native.encoding" value="UTF-8"/>
+<property name="os.arch" value="aarch64"/>
+<property name="os.name" value="Mac OS X"/>
+<property name="os.version" value="15.2"/>
+<property name="path.separator" value=":"/>
+<property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+<property name="sun.arch.data.model" value="64"/>
+<property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/lib"/>
+<property name="sun.cpu.endian" value="little"/>
+<property name="sun.io.unicode.encoding" value="UnicodeBig"/>
+<property name="sun.java.command" value="lib/junit-platform-console-standalone-1.11.4.jar execute --class-path ./out/ --scan-class-path --reports-dir=results"/>
+<property name="sun.java.launcher" value="SUN_STANDARD"/>
+<property name="sun.jnu.encoding" value="UTF-8"/>
+<property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+<property name="sun.stderr.encoding" value="UTF-8"/>
+<property name="sun.stdout.encoding" value="UTF-8"/>
+<property name="user.country" value="US"/>
+<property name="user.dir" value="/Users/kazushimotake/capstone/CCGraderBot"/>
+<property name="user.home" value="/Users/kazushimotake"/>
+<property name="user.language" value="en"/>
+<property name="user.name" value="kazushimotake"/>
+<property name="user.timezone" value="America/Denver"/>
+</properties>
+<testcase name="fillArrayUpZero(TestReporter)" classname="FirstTest" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:FirstTest]/[method:fillArrayUpZero(org.junit.jupiter.api.TestReporter)]
+display-name: fillArray
+]]></system-out>
+<system-out><![CDATA[
+Report Entry #1 (timestamp: 2025-02-04T12:10:54.233255)
+	- value: fillArrayUpZero -> passed
+]]></system-out>
+</testcase>
+<testcase name="seekLetterSetOnceSetMethod(TestReporter)" classname="FirstTest" time="0">
+<error message="data/no_spoon.txt (No such file or directory)" type="java.io.FileNotFoundException"><![CDATA[java.io.FileNotFoundException: data/no_spoon.txt (No such file or directory)
+	at java.base/java.io.FileInputStream.open0(Native Method)
+	at java.base/java.io.FileInputStream.open(FileInputStream.java:216)
+	at java.base/java.io.FileInputStream.<init>(FileInputStream.java:157)
+	at java.base/java.io.FileReader.<init>(FileReader.java:75)
+	at First.seekLetter(First.java:48)
+	at FirstTest.seekLetterSetOnceSetMethod(FirstTest.java:177)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+]]></error>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:FirstTest]/[method:seekLetterSetOnceSetMethod(org.junit.jupiter.api.TestReporter)]
+display-name: seekLetter
+]]></system-out>
+</testcase>
+<testcase name="seekLetterSetOnceConstructor(TestReporter)" classname="FirstTest" time="0.001">
+<error message="data/no_spoon.txt (No such file or directory)" type="java.io.FileNotFoundException"><![CDATA[java.io.FileNotFoundException: data/no_spoon.txt (No such file or directory)
+	at java.base/java.io.FileInputStream.open0(Native Method)
+	at java.base/java.io.FileInputStream.open(FileInputStream.java:216)
+	at java.base/java.io.FileInputStream.<init>(FileInputStream.java:157)
+	at java.base/java.io.FileReader.<init>(FileReader.java:75)
+	at First.seekLetter(First.java:48)
+	at FirstTest.seekLetterSetOnceConstructor(FirstTest.java:162)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+]]></error>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:FirstTest]/[method:seekLetterSetOnceConstructor(org.junit.jupiter.api.TestReporter)]
+display-name: seekLetter
+]]></system-out>
+</testcase>
+<testcase name="existingFilenameSet(TestReporter)" classname="FirstTest" time="0">
+<failure message="IOException thrown for the no_spoon.txt file, which should exist." type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: IOException thrown for the no_spoon.txt file, which should exist.
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at FirstTest.existingFilenameSet(FirstTest.java:106)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+]]></failure>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:FirstTest]/[method:existingFilenameSet(org.junit.jupiter.api.TestReporter)]
+display-name: filename
+]]></system-out>
+</testcase>
+<testcase name="unsetFilename(TestReporter)" classname="FirstTest" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:FirstTest]/[method:unsetFilename(org.junit.jupiter.api.TestReporter)]
+display-name: filename
+]]></system-out>
+<system-out><![CDATA[
+Report Entry #1 (timestamp: 2025-02-04T12:10:54.231826)
+	- value: unsetFilename -> passed
+]]></system-out>
+</testcase>
+<testcase name="fillArrayUpNonzero(TestReporter)" classname="FirstTest" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:FirstTest]/[method:fillArrayUpNonzero(org.junit.jupiter.api.TestReporter)]
+display-name: fillArray
+]]></system-out>
+<system-out><![CDATA[
+Report Entry #1 (timestamp: 2025-02-04T12:10:54.23379)
+	- value: fillArrayUpNonzero -> passed
+]]></system-out>
+</testcase>
+<testcase name="fillArrayDownZero(TestReporter)" classname="FirstTest" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:FirstTest]/[method:fillArrayDownZero(org.junit.jupiter.api.TestReporter)]
+display-name: fillArray
+]]></system-out>
+<system-out><![CDATA[
+Report Entry #1 (timestamp: 2025-02-04T12:10:54.235546)
+	- value: fillArrayDownZero -> passed
+]]></system-out>
+</testcase>
+<testcase name="nonexistingFilename(TestReporter)" classname="FirstTest" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:FirstTest]/[method:nonexistingFilename(org.junit.jupiter.api.TestReporter)]
+display-name: filename
+]]></system-out>
+<system-out><![CDATA[
+Report Entry #1 (timestamp: 2025-02-04T12:10:54.236105)
+	- value: nonexistingFilename -> passed
+]]></system-out>
+</testcase>
+<testcase name="seekLetterSetTwice(TestReporter)" classname="FirstTest" time="0.009">
+<error message="data/no_spoon.txt (No such file or directory)" type="java.io.FileNotFoundException"><![CDATA[java.io.FileNotFoundException: data/no_spoon.txt (No such file or directory)
+	at java.base/java.io.FileInputStream.open0(Native Method)
+	at java.base/java.io.FileInputStream.open(FileInputStream.java:216)
+	at java.base/java.io.FileInputStream.<init>(FileInputStream.java:157)
+	at java.base/java.io.FileReader.<init>(FileReader.java:75)
+	at First.seekLetter(First.java:48)
+	at FirstTest.seekLetterSetTwice(FirstTest.java:192)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+]]></error>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:FirstTest]/[method:seekLetterSetTwice(org.junit.jupiter.api.TestReporter)]
+display-name: seekLetter
+]]></system-out>
+</testcase>
+<testcase name="existingFilenameConstructor(TestReporter)" classname="FirstTest" time="0.001">
+<failure message="IOException thrown for the no_spoon.txt file, which should exist." type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: IOException thrown for the no_spoon.txt file, which should exist.
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at FirstTest.existingFilenameConstructor(FirstTest.java:145)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+]]></failure>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:FirstTest]/[method:existingFilenameConstructor(org.junit.jupiter.api.TestReporter)]
+display-name: filename
+]]></system-out>
+</testcase>
+<testcase name="fillArrayDownNonzero(TestReporter)" classname="FirstTest" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:FirstTest]/[method:fillArrayDownNonzero(org.junit.jupiter.api.TestReporter)]
+display-name: fillArray
+]]></system-out>
+<system-out><![CDATA[
+Report Entry #1 (timestamp: 2025-02-04T12:10:54.23912)
+	- value: fillArrayDownNonzero -> passed
+]]></system-out>
+</testcase>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]
+display-name: JUnit Jupiter
+]]></system-out>
+</testsuite>
