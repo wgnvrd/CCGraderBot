@@ -4,8 +4,13 @@ import time
 from pathlib import Path
 from random import randint
 
-import junitparser
+from canvasapi.submission import Submission
+from canvasapi.canvas_object import CanvasObject
+from canvasapi.exceptions import ResourceDoesNotExist
 import configparser
+from dotenv import load_dotenv
+import junitparser
+from slugify import slugify
 
 from CanvasHelper import (
     get_canvas_api,
@@ -14,6 +19,13 @@ from CanvasHelper import (
     get_ungraded_submissions
 )
 
+from ValidateDirectory import ValidateDirectory
+from UnzipDirectory import UnzipDirectory
+
+canvas = get_canvas_api()
+load_dotenv(".env")
+
+AUTOGRADE_DIR = Path("./testing")
 
 class Autograder():
     def __init__(self, course_id):
@@ -43,7 +55,7 @@ class Autograder():
 
     def poll(self, func, condition=lambda x: x, interval: float=10):
         """
-        Given a function 
+        Given a function, poll every time period until the function passes the condition
         """
         while True:
             value = func()
@@ -52,27 +64,82 @@ class Autograder():
             time.sleep(interval)
 
     def poll_canvas(self):
-        dest = Path('testing/downloads/')
         while True:
             print("Looking for ungraded assignments...")
             # assignment = self.course.get_assignment(assignment_id)
             ungraded_submissions = self.poll(lambda: self.get_ungraded_assignment_submissions())
             for submission in ungraded_submissions:
-                print(submission) 
-                print("Downloading attachments")
-                for attachment in submission.attachments:
-                    print("Ungraded submission ID", submission.id)
-                    path = dest / attachment.display_name
-                    # if not path.exists():
-                    #     print("Downloading attachments...")
-                    #     attachment.download(path)
-                #     # Test would probably be run here
-                score = randint(1, 4)
-                print(f"Automatically assigning random grade of {score} to submission")
-                submission.edit(submission={'posted_grade': score}, comment={'text_comment': f"Attempt {submission.attempt} grade: {score}"})
+                if submission.id == 3336088:
+                    continue
+                self.dispatch_test(submission)
         
+    def download_submission(self, submission: Submission, dest: Path):
+        """ Download student submission """
+        for attachment in submission.attachments:
+            print("Ungraded submission ID", submission.id)
+            path = dest / attachment.display_name
+            attachment.download(path)
+        # score = randint(1, 4)
+        # print(f"Automatically assigning random grade of {score} to submission")
+        # submission.edit(submission={'posted_grade': score}, comment={'text_comment': f"Attempt {submission.attempt} grade: {score}"})
+
+    def _make_dirname(self, canvas_object: CanvasObject):
+        """
+        Generate string in {name}-{id} format 
+        """
+        return Path(slugify(canvas_object.name) + "-" + str(canvas_object.id))
+
+    def generate_test_dir(self, s: Submission) -> Path:
+        """ Generate file path to download submission """
+        course = canvas.get_course(s.course_id)
+        assignment = course.get_assignment(s.assignment_id)
+        user_id = s.user_id
+        try:
+            user_name = canvas.get_user(s.user_id).name
+        except ResourceDoesNotExist: # If using test user
+            user_name = "Test User"
+
+        user_name=slugify(user_name)
+        course_dir = self._make_dirname(course)
+        assignment_dir = self._make_dirname(assignment)
+        test_path = course_dir / assignment_dir / f"{user_name}-{user_id}-{s.attempt}"
+        test_path = AUTOGRADE_DIR / test_path
+        return test_path
+
+    def dispatch_test(self, s: Submission):
+        """ Build and execute testing pipeline on student submission. """ 
+        test_dir = self.generate_test_dir(s)
+        print(s)
+        if not test_dir.exists():
+            test_dir.mkdir(parents=True, exist_ok=True)
+        self.download_submission(submission=s, dest=test_dir)
+        # Run test from config
         
-            
+
+        # Get corresponding test modules based on config
+        uz = UnzipDirectory(
+            target=test_dir / "first_assignment-f3fe1b4b-d786-4c7a-98d6-f0e9e300e38c.zip",
+            dest=test_dir
+        )
+
+        vd = ValidateDirectory(
+            max_score=2, 
+            root=Path(test_dir) / "first_assignment", 
+            paths=[Path(p) for p in ["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"]]
+        )
+
+        # get corresponding test directories (maybe this should be done in SLURM)
+        test_modules = [uz, vd]
+
+        for tm in test_modules:
+            tm.run()
+
+        for tm in test_modules:
+            print(tm.get_score())
+            print(tm.get_feedback())
+        # deploy it in SLURM
+        
+    
 #Example of Grading from a file
 """ 
 userId is the id of the submission to be graded

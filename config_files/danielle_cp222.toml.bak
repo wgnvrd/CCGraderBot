@@ -8,6 +8,7 @@
     # download and unzip files; tests will test properties of zip files
     # configurable piece is sequence of tests; 
         # stop testing if fail
+    # year and block
 
 [default]
 course_id = 43491

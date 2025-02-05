@@ -6,21 +6,28 @@ from test_result_enums import TestResult
 
 class ValidateDirectory(TestModule):
     def __init__(self, max_score: int, root: Path, paths: List[Path]):
-        super().__init__(max_score)
+        super().__init__()
+        self.max_score = max_score
+        self.root = root
         self.paths = [root / p for p in paths]
 
     def run(self):
-        for p in self.paths:
-            if not p.exists():
-                self.testing_done = True
-                self.feedback += f"{p} does not exist. Aborting."
-                self.score = 0
-                self.result = TestResult.FAIL
-                return self.result
-            self.feedback += f"{p} exists\n"
-        self.score = self.max_score
-        self.result = TestResult.PASS
-        self.feedback += "PASSED"
+        if not self.root.exists():
+            # maybe this should be an exception since this is a configuration error?
+            self.feedback += f"{self.root} does not exist. Aborting."
+            self.result = TestResult.FAIL
+        else:
+            for p in self.paths:
+                if not p.exists():
+                    self.testing_done = True
+                    self.feedback += f"{p.absolute()} does not exist. Aborting."
+                    self.score = 0
+                    self.result = TestResult.FAIL
+                self.feedback += f"{p} exists\n"
+            self.score = self.max_score
+            self.result = TestResult.PASS
+            self.feedback += "PASSED"
+
         return self.result
 
 if __name__ == "__main__":
