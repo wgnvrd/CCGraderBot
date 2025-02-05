@@ -16,7 +16,12 @@ class javaDocModule(TestModule):
                     self.score = 0
                     self.feedback += f"\n{f}:"
                     self.feedback += "\n".join(problems)
+                else:
+                    self.score = self.max_score
+                    self.feedback += "\n JavaDoc Test Passed"
 
             except FileNotFoundError:
                 print(f"\nFile \"{f}\" not found.")
                 exit(1)
+
+        self.testing_done = True
