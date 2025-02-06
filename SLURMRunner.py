@@ -88,6 +88,7 @@ class SLURMRunner():
         # make folder
         self.download_attachments(s)
         # retrieve test script
+        
         # 2023b2_cp222/bin/test_first_assignment first_assignment_done.zip
         # run test script on assignment
         # return True if successful

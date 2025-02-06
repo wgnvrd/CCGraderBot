@@ -6,7 +6,7 @@ from test_result_enums import TestResult
 from test_input_wrapper import TestInputWrapper
 
 class ValidateDirectory(TestModule):
-    def __init__(self, max_score: float, root: Path, paths: List[Path]):
+    def __init__(self, max_score: float, target: Path, paths: List[Path]):
         super().__init__()
         self.max_score = max_score
         self.target = target
