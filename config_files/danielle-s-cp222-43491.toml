@@ -10,6 +10,7 @@ unit-test-dir = "/packages/mcscn/cp222/2023b2_cp222/bin"
 
 [155997]
 assignment-name = "Recall JAVA"
+language = "java"
 
 [155997.pipeline]
 # should we be able to accept multiple inputs?
@@ -24,10 +25,19 @@ type="ValidateDirectory"
 max_score=1
 root="first_assignment"
 paths=["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"]
-
+# possible way for doing end-to-end tests
+# steps = [
+#     {type = "directory", paths = ["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"], value = 0.5},
+#     {type = "javadoc", paths = ["src/First.java"], value = 0.5},
+#     {type = "unit-tests", path = "first_assignment/test/FirstTest.java"},
+# ]
 [155990]
 assignment-name = "Debugger Maze"
+steps = [
+    {type = "directory", paths = "", value = 0.5},
+    {type = "end-to-end", command = "java -cp maze/out Maze", value = {"Oh no! You didn't find Alex with the tea... and now the tea is cold!" = 2, "Yay! You have a tea party with Alex!" = 3}}
 
+]
 [155990.pipeline]
 
 [155972]
