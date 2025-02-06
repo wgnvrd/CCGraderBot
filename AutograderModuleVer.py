@@ -1,10 +1,15 @@
 import argparse
 import configparser, os, pathlib, junitparser
+from typing import List
 import subprocess
 from CanvasHelper import  grade_submission, get_submission
 from zipfile import ZipFile
 
+from pathlib import Path
 from SubmissionValidator import checkDirec
+import UnzipDirectory
+import ValidateDirectory
+import javaDocModule
 from javaGrader import jgrade 
 import JUnitModule
 import tomlkit
@@ -32,21 +37,23 @@ def grade(courseId, assignmentId, userId, configFile):
     url = "https://canvas.coloradocollege.edu/api/v1/"
     #Critical Information for finding and testing the assignment stored in config file
     #How many of these attributes would be best to be on command line vs written into file?
-    config = configparser.ConfigParser()
-    config.read(configFile)
-    values = config['DEFAULT']
-    course_id = values["CourseId"]
-    assign_id = values['AssignId']
-    testPath = "testing\\" + values["TestFilePath"]
-    print(testPath)
-    srcFiles = "testing\\" + values["FilePath"]
-    print(srcFiles)
+    #config = configparser.ConfigParser()
+    #config.read(configFile)
+    #values = config['DEFAULT']
+    #course_id = values["CourseId"]
+    #assign_id = values['AssignId']
+    #testPath = "testing\\" + values["TestFilePath"]
+    #srcFiles = "testing\\" + values["FilePath"]
+
+    config = tomlkit.read(os.path.join("config_files", "danielle-s-cp222-43491"))
+    language = config[assignmentId]["language"]
+
     #We add up the score as we progress through testing
     score = 0
     #Start Comment
-    comment = 'RESULTS FOR ' + values["DirectoryName"] + "\n"
+    comment = 'RESULTS FOR ' + config[assignmentId]["assignment-name"] + "\n"
     #Dictionary of test categories to record test results
-    Scores = dict([(k, 1) for k in config["JAVA"]["TestCases"].split()])
+    
 
 # def grade(courseId, assignmentId, userId, configFile):
 #     url = "https://canvas.coloradocollege.edu/api/v1/"
@@ -68,27 +75,51 @@ def grade(courseId, assignmentId, userId, configFile):
 
 
     #UNZIP TEST
-    sub = get_submission(course_id, assign_id, userId)
+    sub = get_submission(courseId, assignmentId, userId)
+    testingPath = Path("testing")
     for attachment in sub.attachments:
         print(attachment.display_name)
-        path = 'testing\\' + attachment.display_name
+        zipPath = testingPath / attachment.display_name
         
         print("Downloading attachments...")
-        attachment.download(path)
-        print(path)
+        attachment.download(zipPath)
+        print(zipPath)
 
-    with ZipFile(path) as zip:
-        zip.extractall( path = ".\\testing")
+    ###ASSEMBLE TEST MODULES###
+    testcount = 0
+    tests = []
+    for entry in config[assignmentId+'.pipeline']['steps']:
+        match(entry["type"]):
+            case("unzip"):
+                tests[testcount] = UnzipDirectory.UnzipDirectory(zipPath, testingPath)
+                testcount += 1
+            case("directory"):
+                root = testingPath / "first_assignment"
+                plist = List[Path]
+                for f in entry['paths']:
+                    plist.append(Path(f))
+                tests[testcount] = ValidateDirectory.ValidateDirectory(0.5, root,plist)
+                testcount += 1
+            case("javadoc"):
+                plist = List[Path]
+                for f in entry["paths"]:
+                    plist.append(root / f)
+                tests[testcount] = javaDocModule.javaDocModule(0.5, plist)
+            case("unit-tests"):
+                #For some reason my brain is not parsing how to fit this format onto the JUnit tests right now, I can come back to this later tonight
+                tests[testcount] = JUnitModule.JUnitModule(entry["path"],)
+
+
 
     #DIRECTORY CHECK TEST
-    results = checkDirec(values['DirectoryName'],config["DEFAULT"]["MandatoryFiles"].split())
-    print(results)
-    if not results[0]:
-        comment += results[1]
-        os.remove(path)
-        grade_submission(get_submission(course_id, assign_id,userId),score, comment)
-        return -1
-    score += 1
+    #results = checkDirec(values['DirectoryName'],config["DEFAULT"]["MandatoryFiles"].split())
+   # print(results)
+    #if not results[0]:
+    #    comment += results[1]
+    #    os.remove(path)
+     #   grade_submission(get_submission(course_id, assign_id,userId),score, comment)
+     #   return -1
+   # score += 1
 
     
     #UNIT TESTS

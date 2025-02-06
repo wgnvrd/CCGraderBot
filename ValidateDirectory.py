@@ -5,7 +5,7 @@ from test_module import TestModule
 from test_result_enums import TestResult
 
 class ValidateDirectory(TestModule):
-    def __init__(self, max_score: int, root: Path, paths: List[Path]):
+    def __init__(self, max_score: float, root: Path, paths: List[Path]):
         super().__init__()
         self.max_score = max_score
         self.root = root
