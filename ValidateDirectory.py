@@ -1,3 +1,4 @@
+import os
 from typing import List
 from pathlib import Path
 
@@ -6,20 +7,20 @@ from test_result_enums import TestResult
 from test_input_wrapper import TestInputWrapper
 
 class ValidateDirectory(TestModule):
-    def __init__(self, max_score: float, target: Path, paths: List[Path]):
+    def __init__(self, max_score: float, root: Path, paths: List[Path]):
         super().__init__()
         self.max_score = max_score
-        self.target = target
-        self.paths = [self.target.path / p for p in paths]
+        self.root = Path("testing") / Path(root)
+        self.paths = [self.root / Path(p) for p in paths]
 
-    def run(self):
-        if not self.root.exists():
+    def run(self, folder):
+        if not os.path.exists(self.root):
             # maybe this should be an exception since this is a configuration error?
             self.feedback += f"{self.root} does not exist. Aborting."
             self.result = TestResult.FAIL
         else:
             for p in self.paths:
-                if not p.exists():
+                if not os.path.exists(p):
                     self.testing_done = True
                     self.feedback += f"{p.absolute()} does not exist. Aborting."
                     self.score = 0

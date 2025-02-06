@@ -1,6 +1,8 @@
 import argparse
 import configparser, os, pathlib, junitparser
 import subprocess
+
+import tomlkit
 from CanvasHelper import  grade_submission, get_submission
 from zipfile import ZipFile
 
@@ -27,14 +29,15 @@ def grade(userId, configFile):
     url = "https://canvas.coloradocollege.edu/api/v1/"
     #Critical Information for finding and testing the assignment stored in config file
     #How many of these attributes would be best to be on command line vs written into file?
-    config = configparser.ConfigParser()
-    config.read(configFile)
-    values = config['DEFAULT']
-    course_id = values["CourseId"]
-    assign_id = values['AssignId']
-    testPath = "testing\\" + values["TestFilePath"]
-    srcFiles = "testing\\" + values["FilePath"]
+    #config = configparser.ConfigParser()
+    #config.read(configFile)
+    #values = config['DEFAULT']
+    #course_id = values["CourseId"]
+    #assign_id = values['AssignId']
+    #testPath = "testing\\" + values["TestFilePath"]
+    #srcFiles = "testing\\" + values["FilePath"]
     #We add up the score as we progress through testing
+    
     score = 0
     #Start Comment
     comment = 'RESULTS FOR ' + values["DirectoryName"] + "\n"

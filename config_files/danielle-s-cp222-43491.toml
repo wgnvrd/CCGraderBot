@@ -18,17 +18,30 @@ input="first_assignment.zip"
 
 [[155997.pipeline.steps]]
 type="UnzipDirectory"
-target=["first_assignment.zip"]
+target="first_assignment.zip"
 
 [[155997.pipeline.steps]]
 type="ValidateDirectory"
-max_score=1
+max_score=0.5
 root="first_assignment"
 paths=["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"]
+
+[[155997.pipeline.steps]]
+type="JavaDoc"
+max_score = 0.5
+files = ["first_assignment/src/First.java"]
+
+
+[[155997.pipeline.steps]]
+max_score = 3
+type = "JUnit"
+test = "test/FirstTest.java"
+source= ["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"]
+testTypes = {"fillArray" = 1, "filename" = 1, "seekLetter" = 1}
 # possible way for doing end-to-end tests
 # steps = [
 #     {type = "unzip" },
-    {type = "directory", paths = ["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"], value = 0.5},
+   # {type = "directory", paths = ["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"], value = 0.5},
 #     {type = "javadoc", paths = ["src/First.java"], value = 0.5},
 #     {type = "unit-tests", path = "first_assignment/test/FirstTest.java", tests = {"fillArray" = 1, "filename" = 1, "seekLetter" = 1}},
 # ]

@@ -13,11 +13,14 @@ from CanvasHelper import get_submission
 from zipfile import ZipFile
 
 class JUnitModule(TestModule):
-    def __init__(self,test,source,Scores,max_score):
-        super().__init__(max_score)
+    def __init__(self,max_score,test,source,testTypes):
+        super().__init__()
+        self.max_score = max_score
         self.test = test
+        print(source)
         self.source = source
-        self.Scores = Scores
+        self.Scores = testTypes
+        self.feedback += "\n UNIT TESTS"
 
     def get_score(self):
         return self.score
@@ -25,14 +28,14 @@ class JUnitModule(TestModule):
     def get_feedback(self):
         return self.feedback
     
-    def run(self):
+    def run(self, folder):
         # source_dir = Path("./testing/first_assignment/src/")
         # files = " ".join(str(p) for p in source_dir.glob("*"))
 
         
-        files = glob(self.source)
+        #files = glob(self.source)
         #Compile Code
-        subprocess.run(["javac","-d", "out", "-cp", os.path.join("lib","junit-platform-console-standalone-1.11.4.jar"),self.test,*files])# self.source])
+        subprocess.run(["javac","-d", "out", "-cp", os.path.join("lib","junit-platform-console-standalone-1.11.4.jar"),self.test,*self.source])# self.source])
         #Run Code
         subprocess.run(['java', '-jar', os.path.join("lib","junit-platform-console-standalone-1.11.4.jar"), 'execute', '--class-path', './out/', '--scan-class-path', '--reports-dir=results'])
         data = junitparser.JUnitXml.fromfile(os.path.join("results", "TEST-junit-jupiter.xml"))
@@ -55,7 +58,7 @@ class JUnitModule(TestModule):
                 else:
                     commentDict[category].append("\n SUCCESS: " + case.name)
         for key in commentDict.keys():
-            self.feedback += key + " tests"
+            self.feedback += "\n" + key + " tests"
             for com in commentDict[key]:
                 self.feedback += com
             self.feedback += "\n"

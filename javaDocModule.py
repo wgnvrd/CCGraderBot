@@ -1,16 +1,19 @@
+from pathlib import Path
+from typing import List
 from test_module import TestModule
 from check_file import check_file;
 class javaDocModule(TestModule):
-    files = []
-    def __init__(self,max, files):
-        self.__init__(max)
+    def __init__(self,max_score: float, files: List[Path]):
+        super().__init__()
+        self.max_score = max_score
         self.files = files
 
 
-    def run(self):
+    def run(self, folder):
         for f in self.files:
+            f = Path('testing') / Path(f)
             try:
-                with open(f) as file:
+                with open( f) as file:
                     problems = check_file(file)
                 if problems:
                     self.score = 0
@@ -24,4 +27,4 @@ class javaDocModule(TestModule):
                 print(f"\nFile \"{f}\" not found.")
                 exit(1)
 
-        self.testing_done = True
+        
