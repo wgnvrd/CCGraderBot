@@ -11,6 +11,7 @@ import configparser
 from dotenv import load_dotenv
 import junitparser
 from slugify import slugify
+from test_runner import TestRunner
 
 from CanvasHelper import (
     get_canvas_api,
@@ -18,7 +19,7 @@ from CanvasHelper import (
     grade_submission, 
     get_ungraded_submissions
 )
-
+from ConfigHandler import ConfigHandler
 from ValidateDirectory import ValidateDirectory
 from UnzipDirectory import UnzipDirectory
 
@@ -108,35 +109,38 @@ class Autograder():
 
     def dispatch_test(self, s: Submission):
         """ Build and execute testing pipeline on student submission. """ 
+        course = canvas.get_course(s.course_id)
         test_dir = self.generate_test_dir(s)
         print(s)
         if not test_dir.exists():
             test_dir.mkdir(parents=True, exist_ok=True)
         self.download_submission(submission=s, dest=test_dir)
         # Run test from config
-        
-
+        ch = ConfigHandler()
+        config = ch.get_assignment_config(course, s.assignment_id)
+        test_runner = TestRunner(test_dir, config)
         # Get corresponding test modules based on config
-        uz = UnzipDirectory(
-            target=test_dir / "first_assignment-f3fe1b4b-d786-4c7a-98d6-f0e9e300e38c.zip",
-            dest=test_dir
-        )
+        test_runner.build_pipeline()
+        # uz = UnzipDirectory(
+        #     target=test_dir / "first_assignment-f3fe1b4b-d786-4c7a-98d6-f0e9e300e38c.zip",
+        #     dest=test_dir
+        # )
 
-        vd = ValidateDirectory(
-            max_score=2, 
-            root=Path(test_dir) / "first_assignment", 
-            paths=[Path(p) for p in ["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"]]
-        )
+        # vd = ValidateDirectory(
+        #     max_score=2, 
+        #     root=Path(test_dir) / "first_assignment", 
+        #     paths=[Path(p) for p in ["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"]]
+        # )
+        # test_modules = [uz, vd]
+        # run tests
+        test_runner.run()
+        # for tm in test_modules:
+        #     tm.run()
 
+        # for tm in test_modules:
+        #     print(tm.get_score())
+        #     print(tm.get_feedback())
         # get corresponding test directories (maybe this should be done in SLURM)
-        test_modules = [uz, vd]
-
-        for tm in test_modules:
-            tm.run()
-
-        for tm in test_modules:
-            print(tm.get_score())
-            print(tm.get_feedback())
         # deploy it in SLURM
         
     

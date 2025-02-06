@@ -3,13 +3,14 @@ from pathlib import Path
 
 from test_module import TestModule
 from test_result_enums import TestResult
+from test_input_wrapper import TestInputWrapper
 
 class ValidateDirectory(TestModule):
     def __init__(self, max_score: float, root: Path, paths: List[Path]):
         super().__init__()
         self.max_score = max_score
-        self.root = root
-        self.paths = [root / p for p in paths]
+        self.target = target
+        self.paths = [self.target.path / p for p in paths]
 
     def run(self):
         if not self.root.exists():
@@ -31,9 +32,10 @@ class ValidateDirectory(TestModule):
         return self.result
 
 if __name__ == "__main__":
-    vd = ValidateDirectory(2, 
-    Path("C:\\Users\\isabe\\Documents\\repos\\cc-grader-bot\\testing\\downloads\\first_assignment\\first_assignment"), 
-    [Path(p) for p in ["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"]]
+    vd = ValidateDirectory(
+        2, 
+        Path("C:\\Users\\isabe\\Documents\\repos\\cc-grader-bot\\testing\\downloads\\first_assignment\\first_assignment"), 
+        [Path(p) for p in ["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"]]
     )
     vd.run()
     print(vd.get_score())
