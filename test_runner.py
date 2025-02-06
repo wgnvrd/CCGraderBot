@@ -1,10 +1,25 @@
 from typing import List, ClassVar
 from pathlib import Path
+import argparse
+import sys
 
 from UnzipDirectory import UnzipDirectory
 from ValidateDirectory import ValidateDirectory
 from test_module import TestModule
 from test_input_wrapper import TestInputWrapper
+from CanvasHelper import get_canvas_api
+from ConfigHandler import ConfigHandler
+
+canvas = get_canvas_api()
+
+parser = argparse.ArgumentParser(
+    prog="Test Runner",
+    description="Build and run test pipelines based on config",
+)
+parser.add_argument('test_dir')
+parser.add_argument('course_id')
+parser.add_argument('assignment_id')
+parser.add_argument('submission_id')
 
 class TestRunner():
     """
@@ -42,3 +57,25 @@ class TestRunner():
             self.feedback += test_module.feedback()
             self.feedback += "/n"
 
+    def get_score(self):
+        return self.score
+
+    def get_feedback(self):
+        return self.feedback
+
+if __name__ == "__main__":
+    args = parser.parse_args()
+    course = canvas.get_course(args.course_id)
+    assignment = canvas.get_assignment(args.assignment_id)
+    submission = canvas.get_submission(args.submission_id)
+
+    ch = ConfigHandler()
+    config = ch.get_assignment_config(course, args.assignment_id)
+
+    test_runner = TestRunner(args.test_dir, config)
+    test_runner.build_pipeline()
+    test_runner.run()
+
+    score = test_runner.get_score()
+    feedback = test_runner.get_feedback()
+    submission.edit(submission={'posted_grade': score}, comment={'text_comment': feedback})

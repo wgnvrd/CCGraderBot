@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 import junitparser
 from slugify import slugify
 from test_runner import TestRunner
+from SLURMRunner import SLURMRunner
 
 from CanvasHelper import (
     get_canvas_api,
@@ -107,20 +108,15 @@ class Autograder():
         test_path = AUTOGRADE_DIR / test_path
         return test_path
 
-    def dispatch_test(self, s: Submission):
+    def dispatch_test(self, submission: Submission):
         """ Build and execute testing pipeline on student submission. """ 
-        course = canvas.get_course(s.course_id)
-        test_dir = self.generate_test_dir(s)
-        print(s)
+        test_dir = self.generate_test_dir(submission)
         if not test_dir.exists():
             test_dir.mkdir(parents=True, exist_ok=True)
-        self.download_submission(submission=s, dest=test_dir)
+        self.download_submission(submission=submission, dest=test_dir)
         # Run test from config
-        ch = ConfigHandler()
-        config = ch.get_assignment_config(course, s.assignment_id)
-        test_runner = TestRunner(test_dir, config)
+        sr = SLURMRunner(submission)
         # Get corresponding test modules based on config
-        test_runner.build_pipeline()
         # uz = UnzipDirectory(
         #     target=test_dir / "first_assignment-f3fe1b4b-d786-4c7a-98d6-f0e9e300e38c.zip",
         #     dest=test_dir
@@ -133,7 +129,6 @@ class Autograder():
         # )
         # test_modules = [uz, vd]
         # run tests
-        test_runner.run()
         # for tm in test_modules:
         #     tm.run()
 
@@ -142,7 +137,7 @@ class Autograder():
         #     print(tm.get_feedback())
         # get corresponding test directories (maybe this should be done in SLURM)
         # deploy it in SLURM
-        
+
     
 #Example of Grading from a file
 """ 
