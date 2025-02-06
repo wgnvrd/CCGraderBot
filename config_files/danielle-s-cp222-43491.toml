@@ -3,13 +3,27 @@
 [default]
 course-id = 43491
 course-name = "Danielle's CP222"
-module-name = ""
-unit-test-dir = ""
+module-name = "cp222/2023_block2"
+unit-test-dir = "/packages/mcscn/cp222/2023b2_cp222/bin"
+
+# perhaps there should be an id mapping instead...
 
 [155997]
 assignment-name = "Recall JAVA"
 
 [155997.pipeline]
+# should we be able to accept multiple inputs?
+input="first_assignment.zip"
+
+[[155997.pipeline.steps]]
+type="UnzipDirectory"
+target=["first_assignment.zip"]
+
+[[155997.pipeline.steps]]
+type="ValidateDirectory"
+max_score=1
+root="first_assignment"
+paths=["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"]
 
 [155990]
 assignment-name = "Debugger Maze"

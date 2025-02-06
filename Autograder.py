@@ -18,7 +18,7 @@ from CanvasHelper import (
     grade_submission, 
     get_ungraded_submissions
 )
-
+from ConfigHandler import ConfigHandler
 from ValidateDirectory import ValidateDirectory
 from UnzipDirectory import UnzipDirectory
 
@@ -108,14 +108,17 @@ class Autograder():
 
     def dispatch_test(self, s: Submission):
         """ Build and execute testing pipeline on student submission. """ 
+        course = canvas.get_course(s.course_id)
         test_dir = self.generate_test_dir(s)
         print(s)
         if not test_dir.exists():
             test_dir.mkdir(parents=True, exist_ok=True)
         self.download_submission(submission=s, dest=test_dir)
         # Run test from config
-        
+        ch = ConfigHandler()
+        config = ch.get_assignment_config(course, s.assignment_id)
 
+        # is the input always a zip file?
         # Get corresponding test modules based on config
         uz = UnzipDirectory(
             target=test_dir / "first_assignment-f3fe1b4b-d786-4c7a-98d6-f0e9e300e38c.zip",

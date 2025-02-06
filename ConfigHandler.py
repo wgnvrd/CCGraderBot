@@ -19,6 +19,7 @@ class ConfigHandler():
     submissions are tested and graded.
     `autograder.toml` provides a mapping of Canvas course IDs to their
     corresponding configuration files. 
+    Automatically generates templates for files.
     """
     def __init__(self):
         self.config_file_path = self.get_config_file_path()
@@ -112,11 +113,7 @@ class ConfigHandler():
         doc = self.get_course_config_file(course)
         return dict(doc)[str(assign_id)]
 
-    def get_autograded_assignments(self, course_id):
-        """
-        Return IDs of assignments to be autograded. 
-        """
-        pass
+    
 
 if __name__ == "__main__":
     course = canvas.get_course(43491)
