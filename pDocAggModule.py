@@ -33,7 +33,7 @@ class PyDocAggregatorModule(TestModule):
                 return
         print("All given filepaths lead to existing files")
         
-        pdoc_agg_results_storage = Path("./pydoc_aggregation_results")
+        pdoc_agg_results_storage = Path("./pydoc_agg_results")
         if not os.path.isdir(pdoc_agg_results_storage):
             os.mkdir(pdoc_agg_results_storage)
         

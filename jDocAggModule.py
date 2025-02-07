@@ -33,7 +33,7 @@ class JavaDocAggregatorModule(TestModule):
                 return
         print("All given filepaths lead to existing files")
         
-        jdoc_agg_results_storage = Path("./javadoc_aggregation_results")
+        jdoc_agg_results_storage = Path("./javadoc_agg_results")
         if not os.path.isdir(jdoc_agg_results_storage):
             os.mkdir(jdoc_agg_results_storage)
             print("Directory '%s' created" % jdoc_agg_results_storage)
