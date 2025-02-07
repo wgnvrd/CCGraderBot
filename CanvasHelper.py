@@ -1,8 +1,5 @@
-import requests
 from dotenv import load_dotenv
 import os
-import zipfile
-import io
 
 from canvasapi import Canvas
 from canvasapi.submission import Submission
