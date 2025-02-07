@@ -14,6 +14,6 @@ class UnzipDirectory(TestModule):
     def run(self, folder):
         with zipfile.ZipFile("testing/" +self.target, 'r') as zip_ref:
             zip_ref.extractall(self.dest)
-        self.feedback = f"Unzipped {self.target} to {self.dest}"
+        self.feedback = f"Unzipped {self.target} to {self.dest}\n\n"
         self.score = self.max_score
         #self.target.set_path(self.dest)

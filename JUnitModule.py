@@ -16,8 +16,7 @@ class JUnitModule(TestModule):
     def __init__(self,max_score,test,source,testTypes):
         super().__init__()
         self.max_score = max_score
-        self.test = test
-        print(source)
+        self.test = Path("testing") /Path(test)
         self.source = source
         self.Scores = testTypes
         self.feedback += "\n UNIT TESTS"
@@ -35,7 +34,8 @@ class JUnitModule(TestModule):
         
         #files = glob(self.source)
         #Compile Code
-        subprocess.run(["javac","-d", "out", "-cp", os.path.join("lib","junit-platform-console-standalone-1.11.4.jar"),self.test,*self.source])# self.source])
+        
+        subprocess.run(["javac","-d", "out", "-cp", os.path.join("lib","junit-platform-console-standalone-1.11.4.jar"),*self.source ])# self.source])
         #Run Code
         subprocess.run(['java', '-jar', os.path.join("lib","junit-platform-console-standalone-1.11.4.jar"), 'execute', '--class-path', './out/', '--scan-class-path', '--reports-dir=results'])
         data = junitparser.JUnitXml.fromfile(os.path.join("results", "TEST-junit-jupiter.xml"))

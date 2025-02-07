@@ -113,7 +113,7 @@ class Autograder():
         test_dir = self.generate_test_dir(submission)
         if not test_dir.exists():
             test_dir.mkdir(parents=True, exist_ok=True)
-        self.download_submission(submission=submission, dest=test_dir)
+        self.download_submission(submission=submission, dest="testing")
         # Run test from config
         sr = SLURMRunner(submission)
         # Get corresponding test modules based on config

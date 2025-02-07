@@ -28,7 +28,7 @@ class ValidateDirectory(TestModule):
                 self.feedback += f"{p} exists\n"
             self.score = self.max_score
             self.result = TestResult.PASS
-            self.feedback += "PASSED"
+            self.feedback += "PASSED VALIDATE DIRECTORY\n\n"
 
         return self.result
 
