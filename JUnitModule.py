@@ -8,6 +8,7 @@ from pathlib import Path
 from glob import glob
 # remove this later
 import configparser
+from test_input_wrapper import TestInputWrapper
 from test_module import TestModule
 from CanvasHelper import get_submission
 from zipfile import ZipFile
@@ -15,6 +16,7 @@ from zipfile import ZipFile
 class JUnitModule(TestModule):
     def __init__(self,max_score,test,source,testTypes):
         super().__init__()
+        
         self.max_score = max_score
         self.test = Path("testing") /Path(test)
         self.source = source
@@ -27,17 +29,18 @@ class JUnitModule(TestModule):
     def get_feedback(self):
         return self.feedback
     
-    def run(self, folder):
+    def run(self, working_directory):
         # source_dir = Path("./testing/first_assignment/src/")
         # files = " ".join(str(p) for p in source_dir.glob("*"))
 
         
         #files = glob(self.source)
         #Compile Code
-        
-        subprocess.run(["javac","-d", "out", "-cp", os.path.join("lib","junit-platform-console-standalone-1.11.4.jar"),*self.source ])# self.source])
+        self.paths = [working_directory.path / Path(p) for p in self.source]
+        subprocess.run(["javac","-d", os.path.join(working_directory.path,"out"), "-cp", os.path.join("lib","junit-platform-console-standalone-1.11.4.jar"),*self.paths ])# self.source])
         #Run Code
-        subprocess.run(['java', '-jar', os.path.join("lib","junit-platform-console-standalone-1.11.4.jar"), 'execute', '--class-path', './out/', '--scan-class-path', '--reports-dir=results'])
+        
+        subprocess.run(['java', '-jar', os.path.join("..","..","lib","junit-platform-console-standalone-1.11.4.jar"), 'execute', '--class-path', './out/', '--scan-class-path', '--reports-dir=results'], cwd = working_directory.path)
         data = junitparser.JUnitXml.fromfile(os.path.join("results", "TEST-junit-jupiter.xml"))
         commentDict = {key: [] for key in list(self.Scores.keys())}
         for case in data:

@@ -23,13 +23,13 @@ parser.add_argument('course_id')
 parser.add_argument('assignment_id')
 parser.add_argument('submission_id')
 
-#python3 test_runner.py ./testing  43491 155997 24388
+#python3 test_runner.py ./testing/first_assignment.zip  43491 155997 24388
 
 class TestRunner():
     """
     Initializes and runs pipeine based on assignment configuration.
     """
-    def __init__(self, test_folder: Path, config: dict):
+    def __init__(self, attach_path: Path, config: dict):
         self.config: dict = config
         self.map: dict = {
             "ValidateDirectory": ValidateDirectory,
@@ -37,7 +37,7 @@ class TestRunner():
             "JavaDoc": javaDocModule,
             "JUnit": JUnitModule
         }
-        self.test_folder = test_folder
+        self.target = attach_path
         self.pipeline: List[TestModule] = []
         self.score = 0
         self.feedback = ""
@@ -49,8 +49,9 @@ class TestRunner():
         """
         # start by moving this to init
         pipeline_config: dict = self.config['pipeline']
-        comb = self.test_folder / pipeline_config['input']
-        self.input = TestInputWrapper(comb)
+        
+        self.input = TestInputWrapper(self.target)
+        
         
         for module_config in pipeline_config['steps']: 
             test_module_class: ClassVar[TestModule] = self.map[module_config['type']]
@@ -81,6 +82,7 @@ if __name__ == "__main__":
     config = ch.get_assignment_config(course, args.assignment_id)
 
     test_runner = TestRunner(Path(args.test_dir), config)
+    
     test_runner.build_pipeline()
     test_runner.run()
 
