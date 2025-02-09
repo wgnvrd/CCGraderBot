@@ -37,11 +37,11 @@ class ConfigHandler():
             doc = tomlkit.load(f)
         return doc
 
-    def get_course_config_file(self, course):
+    def get_course_config(self, course):
         path = self.get_course_config_path(course)
         with open(path, "r") as f:
             doc = tomlkit.load(f)
-        return doc
+        return doc['default']
 
     def generate_autograder_config(self):
         """
@@ -113,8 +113,10 @@ class ConfigHandler():
         doc = self.get_course_config_file(course)
         return dict(doc)[str(assign_id)]
 
+ch = ConfigHandler()
+def get_config_handler() -> ConfigHandler:
+    return ch
     
-
 if __name__ == "__main__":
     course = canvas.get_course(43491)
     ch = ConfigHandler()

@@ -10,7 +10,7 @@ from javaDocModule import javaDocModule
 from test_module import TestModule
 from test_input_wrapper import TestInputWrapper
 from CanvasHelper import get_canvas_api
-from ConfigHandler import ConfigHandler
+from ConfigHandler import get_config_handler
 
 canvas = get_canvas_api()
 
@@ -74,14 +74,15 @@ class TestRunner():
 
 if __name__ == "__main__":
     args = parser.parse_args()
+    test_dir = Path(args.test_dir)
     course = canvas.get_course(args.course_id)
     assignment = course.get_assignment(args.assignment_id)
     submission = assignment.get_submission(args.submission_id)
 
-    ch = ConfigHandler()
+    ch = get_config_handler()
     config = ch.get_assignment_config(course, args.assignment_id)
 
-    test_runner = TestRunner(Path(args.test_dir), config)
+    test_runner = TestRunner(test_dir, config)
     
     test_runner.build_pipeline()
     test_runner.run()

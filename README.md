@@ -6,13 +6,27 @@ A service for assisted and automatic grading of computer science assignments at 
 ### Environment setup
 Create an .env file (this is included in `.gitignore`):
 <!-- Might not include password in the future... -->
+#### Installation
+On a linux system:
 ```bash
-CANVAS_ACCESS_TOKEN=# your canvas API token
-CC_USERNAME=# your cc username
-CC_PASSWORD=# your cc password
+git clone https://github.com/wgnvrd/CCGraderBot.git
+cd CCGraderBot
+touch .env
+echo "CANVAS_ACCESS_TOKEN=#[YOUR CANVAS ACCESS TOKEN]" >> .env
 ```
+The following dependencies need to be installed:
+```
+python-dotenv
+canvasapi
+junitparser
+tomlkit
+pathlib
+slugify
+```
+
 ### Usage
 ```bash
-sudo apt-get install sshpass
-./hello.ssh
+python Autograder.py
 ```
+
+#### Configuration files

@@ -27,7 +27,7 @@ class UnzipDirectory(TestModule):
             self.feedback = f"Unzipped {working_directory.path} to {self.dest}\n\n"
             self.score = self.max_score
             working_directory.set_path(self.dest)
-        except  FileNotFoundError:
+        except FileNotFoundError:
             self.score = 0
             self.testing_done = True
             self.feedback= "ERROR: File Not Found"

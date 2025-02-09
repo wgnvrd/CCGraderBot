@@ -32,7 +32,6 @@ max_score = 0.5
 files = ["src/First.java"]
 
 
-
 [[155997.pipeline.steps]]
 max_score = 3
 type = "JUnit"

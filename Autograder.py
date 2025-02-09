@@ -20,9 +20,9 @@ from CanvasHelper import (
     grade_submission, 
     get_ungraded_submissions
 )
-from ConfigHandler import ConfigHandler
-from ValidateDirectory import ValidateDirectory
-from UnzipDirectory import UnzipDirectory
+# from ConfigHandler import ConfigHandler
+# from ValidateDirectory import ValidateDirectory
+# from UnzipDirectory import UnzipDirectory
 
 canvas = get_canvas_api()
 load_dotenv(".env")
@@ -91,7 +91,7 @@ class Autograder():
         """
         return Path(slugify(canvas_object.name) + "-" + str(canvas_object.id))
 
-    def generate_test_dir(self, s: Submission) -> Path:
+    def generate_test_dir(self, s: Submission):
         """ Generate file path to download submission """
         course = canvas.get_course(s.course_id)
         assignment = course.get_assignment(s.assignment_id)
@@ -105,17 +105,18 @@ class Autograder():
         course_dir = self._make_dirname(course)
         assignment_dir = self._make_dirname(assignment)
         test_path = course_dir / assignment_dir / f"{user_name}-{user_id}-{s.attempt}"
-        test_path = AUTOGRADE_DIR / test_path
-        return test_path
+        test_dir = AUTOGRADE_DIR / test_path
+        return test_dir
 
     def dispatch_test(self, submission: Submission):
         """ Build and execute testing pipeline on student submission. """ 
         test_dir = self.generate_test_dir(submission)
         if not test_dir.exists():
             test_dir.mkdir(parents=True, exist_ok=True)
-        self.download_submission(submission=submission, dest="testing")
+        self.download_submission(submission=submission, dest=test_dir)
         # Run test from config
-        sr = SLURMRunner(submission)
+        runner = SLURMRunner()
+        runner.deploy(submission, test_dir)
         # Get corresponding test modules based on config
         # uz = UnzipDirectory(
         #     target=test_dir / "first_assignment-f3fe1b4b-d786-4c7a-98d6-f0e9e300e38c.zip",
