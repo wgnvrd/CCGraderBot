@@ -9,7 +9,7 @@ from ConfigHandler import get_config_handler
 
 canvas = get_canvas_api()
 
-SLURM_DIR = Path("/testing/slurm")
+SLURM_DIR = Path("/home/i_wagenvoord/autograding/slurm")
 """
 Generate an sbatch script
 Submit the script to SLURM using sbatch <script name>
@@ -39,8 +39,8 @@ class SLURMRunner():
     #     for attachment in s.attachments:
     #         attachment.download(download_path / attachment.display_name)
 
-    def get_slurm_script_path(self, s: Submission):
-        return f"autograde-{s.course_id}-{s.assignment_id}.slurm"
+    def get_slurm_script_path(self, s: Submission) -> Path:
+        return Path(f"autograde-{s.course_id}-{s.assignment_id}.slurm")
 
     def generate_slurm_script(self, s: Submission, test_dir: Path):
         """
@@ -57,11 +57,12 @@ class SLURMRunner():
         course = canvas.get_course(course_id)
         config = self.ch.get_course_config(course)
         repo_location = "/home/i_wagenvoord/cc-grader-bot"
-        slurm_script_path = self.get_slurm_script()
+        slurm_script_path = self.get_slurm_script_path(s)
+        print(slurm_script_path)
         # unit_tests = config["pipeline"]["steps"][0]["path"] # hard-coded
         script = f"""#!/bin/bash
             #SBATCH --job-name={slurm_script_path.name}-{"{}"}{"{}"}
-            #SBATCH --output=%x.out
+            #SBATCH --output=%j.out
             #SBATCH --nodes=1
             #SBATCH --ntasks=1
             #SBATCH --cpus-per-task=1
@@ -82,19 +83,20 @@ class SLURMRunner():
         """
         Run given script in the command line. 
         """
-        slurm_script_path = self.get_slurm_script(s)
+        slurm_script_path = self.get_slurm_script_path(s)
+        print(slurm_script_path)
         result = subprocess.run(["sbatch", slurm_script_path.absolute()])
         return result
 
-    def get_slurm_script(self, s: Submission) -> Path:
-        """
-        Retrieve an assignment's associated SLURM script.
-        If a SLURM script doesn't exist, generate one based on
-        the configuration file.
-        """
-        name = f"autograde-{s.course_id}-{s.assignment_id}"
-        slurm_script_path = SLURM_DIR / name
-        return slurm_script_path
+    # def get_slurm_script(self, s: Submission) -> Path:
+    #     """
+    #     Retrieve an assignment's associated SLURM script.
+    #     If a SLURM script doesn't exist, generate one based on
+    #     the configuration file.
+    #     """
+    #     name = f"autograde-{s.course_id}-{s.assignment_id}"
+    #     slurm_script_path = SLURM_DIR / name
+    #     return slurm_script_path
 
 
     def deploy(self, s: Submission, test_dir: Path):

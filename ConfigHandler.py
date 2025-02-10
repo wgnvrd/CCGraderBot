@@ -8,7 +8,7 @@ import tomlkit
 from CanvasHelper import canvas
 
 # CONFIG_DIR = Path("/home/i_wagenvoord/autograder/")
-CONFIG_DIR = Path("./config_files")
+CONFIG_DIR = Path("/home/i_wagenvoord/autograding/config_files")
 
 if not CONFIG_DIR.exists():
     CONFIG_DIR.mkdir(parents=True, exist_ok=True)
@@ -22,8 +22,11 @@ class ConfigHandler():
     Automatically generates templates for files.
     """
     def __init__(self):
+        print("In init method")
         self.config_file_path = self.get_config_file_path()
+        print(self.config_file_path)
         if not self.config_file_path.exists():
+            print("Generating autograder.toml")
             self.generate_autograder_config()
 
     def get_config_file_path(self) -> Path:
