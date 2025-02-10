@@ -31,12 +31,14 @@ type="JavaDoc"
 max_score = 0.5
 files = ["src/First.java"]
 
-
+[[155997.pipeline.steps]]
+type = "Compile"
+max_score = 0
+source= ["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"]
 [[155997.pipeline.steps]]
 max_score = 3
 type = "JUnit"
 test = "test/FirstTest.java"
-source= ["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"]
 testTypes = {"fillArray" = 1, "filename" = 1, "seekLetter" = 1}
 # possible way for doing end-to-end tests
 # steps = [

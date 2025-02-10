@@ -3,6 +3,7 @@ from pathlib import Path
 import argparse
 import sys
 
+from CompileModule import CompileModule
 from JUnitModule import JUnitModule
 from UnzipDirectory import UnzipDirectory
 from ValidateDirectory import ValidateDirectory
@@ -35,7 +36,8 @@ class TestRunner():
             "ValidateDirectory": ValidateDirectory,
             "UnzipDirectory": UnzipDirectory,
             "JavaDoc": javaDocModule,
-            "JUnit": JUnitModule
+            "JUnit": JUnitModule,
+            "Compile":CompileModule
         }
         self.target = attach_path
         self.pipeline: List[TestModule] = []
@@ -61,10 +63,13 @@ class TestRunner():
 
     def run(self):
         for test_module in self.pipeline:
+            
             test_module.run(self.input)
             self.score += test_module.get_score()
             self.feedback += test_module.feedback
-            self.feedback += "/n"
+            self.feedback += "\n"
+            if test_module.get_testing_done():
+                return
 
     def get_score(self):
         return self.score

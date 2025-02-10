@@ -41,7 +41,7 @@ class ConfigHandler():
         path = self.get_course_config_path(course)
         with open(path, "r") as f:
             doc = tomlkit.load(f)
-        return doc['default']
+        return doc
 
     def generate_autograder_config(self):
         """
@@ -110,7 +110,8 @@ class ConfigHandler():
         """
         Read associated course file and return appropriate assignment config
         """
-        doc = self.get_course_config_file(course)
+        doc = self.get_course_config(course)
+        print(doc)
         return dict(doc)[str(assign_id)]
 
 ch = ConfigHandler()
