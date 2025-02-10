@@ -83,13 +83,14 @@ class Autograder():
             for p in OUT_DIR.glob("*.json"):
                 with open(p, 'r') as f:
                     data = json.load(f)
-                    print(data)
+                    # print(data)
                 course = self.canvas.get_course(data["course_id"])
                 assignment = course.get_assignment(data["assignment_id"])
                 submission = assignment.get_submission(data["user_id"])
                 score = data["score"]
                 feedback = data["feedback"]
                 submission.edit(submission={'posted_grade': score}, comment={'text_comment': feedback})
+                print(f"Posted grade {score} to submission {submission.id}")
                 p.unlink() # delete the file
 
 

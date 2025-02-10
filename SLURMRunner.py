@@ -88,6 +88,7 @@ class SLURMRunner():
         slurm_script_path = self.get_slurm_script_path(s)
         print(slurm_script_path)
         result = subprocess.run(["sbatch", slurm_script_path.absolute()])
+        subprocess.run(["squeue"]) # demo purposes
         return result
 
     # def get_slurm_script(self, s: Submission) -> Path:

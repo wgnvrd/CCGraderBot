@@ -22,7 +22,6 @@ class ConfigHandler():
     Automatically generates templates for files.
     """
     def __init__(self):
-        print("In init method")
         self.config_file_path = self.get_config_file_path()
         print(self.config_file_path)
         if not self.config_file_path.exists():
@@ -75,7 +74,6 @@ class ConfigHandler():
         #     self.add_course_to_autograder_config(course)
         # doc = self.get_config_file()
         fname = doc["course-configs"][str(course_id)]
-        print(fname)
 
         return CONFIG_DIR / fname
 

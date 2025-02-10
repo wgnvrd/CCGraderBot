@@ -3,6 +3,7 @@ from pathlib import Path
 import argparse
 import sys
 import json
+from glob import glob
 
 from CompileModule import CompileModule
 from JUnitModule import JUnitModule
@@ -94,10 +95,10 @@ if __name__ == "__main__":
     ch = get_config_handler()
     # course_config = ch.get_course_config_file(args.course_id)['default']
     config = ch.get_assignment_config(args.course_id, args.assignment_id)
-    print("Assignment config: ")
-    print(config)
+    
+    input_fname = list(test_dir.glob(config['pipeline']['input']))[0]
 
-    test_runner = TestRunner(test_dir / config['pipeline']['input'], config)
+    test_runner = TestRunner(test_dir / input_fname, config)
     
     test_runner.build_pipeline()
     test_runner.run()
