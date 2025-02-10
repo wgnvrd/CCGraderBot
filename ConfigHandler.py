@@ -37,8 +37,8 @@ class ConfigHandler():
             doc = tomlkit.load(f)
         return doc
 
-    def get_course_config(self, course):
-        path = self.get_course_config_path(course)
+    def get_course_config_file(self, course_id: int):
+        path = self.get_course_config_path(course_id)
         with open(path, "r") as f:
             doc = tomlkit.load(f)
         return doc
@@ -63,15 +63,15 @@ class ConfigHandler():
         with open(self.config_file_path, "w") as f:
             tomlkit.dump(doc, f)
 
-    def get_course_config_path(self, course: course) -> Path:
+    def get_course_config_path(self, course_id: int) -> Path:
         """
         Retrieve corresponding course configuration file using course ID.
         """
         doc = self.get_config_file()
-        if str(course.id) not in doc["course-configs"]: 
-            self.add_course_to_autograder_config(course)
-        doc = self.get_config_file()
-        fname = doc["course-configs"][str(course.id)]
+        # if str(course.id) not in doc["course-configs"]: 
+        #     self.add_course_to_autograder_config(course)
+        # doc = self.get_config_file()
+        fname = doc["course-configs"][str(course_id)]
 
         return CONFIG_DIR / fname
 
@@ -79,7 +79,7 @@ class ConfigHandler():
         """
         Generate configuration file for a given course. If the file already exists, update with any new assignments.
         """
-        config_path = self.get_course_config_path(course)
+        config_path = self.get_course_config_path(course.id)
         if not config_path.exists():
             s = f"""
             # AUTOGRADING CONFIGURATION FOR {course.name}
@@ -102,15 +102,15 @@ class ConfigHandler():
             # TODO: If config file already exists, just add new assignments that aren't yet in the file?
             pass
 
-    def get_course_defaults(self, course: course):
-        doc = self.get_course_config_file(course)
+    def get_course_defaults(self, course_id: int):
+        doc = self.get_course_config_file(course_id)
         return dict(doc)["default"]
 
-    def get_assignment_config(self, course: course, assign_id: int):
+    def get_assignment_config(self, course_id: int, assign_id: int):
         """
         Read associated course file and return appropriate assignment config
         """
-        doc = self.get_course_config(course)
+        doc = self.get_course_config_file(course_id)
         return dict(doc)[str(assign_id)]
 
 ch = ConfigHandler()

@@ -96,7 +96,6 @@ class SLURMRunner():
         slurm_script_path = SLURM_DIR / name
         return slurm_script_path
 
-
     def deploy(self, s: Submission, test_dir: Path):
         """
         Given a submission:

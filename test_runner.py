@@ -82,18 +82,20 @@ class TestRunner():
 if __name__ == "__main__":
     args = parser.parse_args()
     test_dir = Path(args.test_dir)
-    course = canvas.get_course(args.course_id)
-    assignment = course.get_assignment(args.assignment_id)
-    submission = assignment.get_submission(args.submission_id)
+    # course = canvas.get_course(args.course_id)
+    # assignment = course.get_assignment(args.assignment_id)
+    # submission = assignment.get_submission(args.submission_id)
 
     ch = get_config_handler()
-    config = ch.get_assignment_config(course, args.assignment_id)
+    config = ch.get_assignment_config(args.course_id, args.assignment_id)
 
     test_runner = TestRunner(test_dir, config)
     
     test_runner.build_pipeline()
     test_runner.run()
 
+    # (Band-aid code) For now, let's report score and feedback to Autograder by writing to a JSON file? 
     score = test_runner.get_score()
     feedback = test_runner.get_feedback()
+    
     submission.edit(submission={'posted_grade': score}, comment={'text_comment': feedback})
