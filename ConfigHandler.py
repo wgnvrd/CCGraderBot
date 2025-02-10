@@ -111,7 +111,6 @@ class ConfigHandler():
         Read associated course file and return appropriate assignment config
         """
         doc = self.get_course_config(course)
-        print(doc)
         return dict(doc)[str(assign_id)]
 
 ch = ConfigHandler()

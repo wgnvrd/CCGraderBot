@@ -49,12 +49,28 @@ testTypes = {"fillArray" = 1, "filename" = 1, "seekLetter" = 1}
 # ]
 [155990]
 assignment-name = "Debugger Maze"
-steps = [
-    {type = "directory", paths = "", value = 0.5},
-    {type = "end-to-end", command = "java -cp maze/out Maze", value = {"Oh no! You didn't find Alex with the tea... and now the tea is cold!" = 2, "Yay! You have a tea party with Alex!" = 3}}
-
-]
+language = "Java"
 [155990.pipeline]
+
+[[155990.pipeline.steps]]
+type="UnzipDirectory"
+
+[[155990.pipeline.steps]]
+type="ValidateDirectory"
+max_score=1
+root="maze"
+paths=["moves.txt", "README.txt", "src/DoneBrokeException.java", "src/InvalidMoveException.java", "src/MazeGenerator.java","src/Maze.java", "src/Room.java"]
+
+[[155990.pipeline.steps]]
+type = "Compile"
+max_score = 0
+source= ["src/DoneBrokeException.java", "src/InvalidMoveException.java", "src/MazeGenerator.java", "src/Maze.java", "src/Room.java"]
+
+[[155990.pipeline.steps]]
+type = "EndToEnd"
+max_score = 3
+command = "java -cp out Maze"
+reqs = {"Oh no! No tea and no Alex!"= 1,"Oh no! You didn't find Alex with the tea... and now the tea is cold!" = 2, "Yay! You have a tea party with Alex!" = 3}
 
 [155972]
 assignment-name = "DFA Library"

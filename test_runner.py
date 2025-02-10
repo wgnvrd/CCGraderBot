@@ -7,6 +7,7 @@ from CompileModule import CompileModule
 from JUnitModule import JUnitModule
 from UnzipDirectory import UnzipDirectory
 from ValidateDirectory import ValidateDirectory
+from e2eModule import e2eModule
 from javaDocModule import javaDocModule
 from test_module import TestModule
 from test_input_wrapper import TestInputWrapper
@@ -37,7 +38,8 @@ class TestRunner():
             "UnzipDirectory": UnzipDirectory,
             "JavaDoc": javaDocModule,
             "JUnit": JUnitModule,
-            "Compile":CompileModule
+            "Compile":CompileModule,
+            "EndToEnd" : e2eModule
         }
         self.target = attach_path
         self.pipeline: List[TestModule] = []

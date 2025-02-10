@@ -23,8 +23,9 @@ class ValidateDirectory(TestModule):
         else:
             for p in self.paths:
                 if not os.path.exists(working_directory.path / p):
+                    print(working_directory.path / p)
                     self.testing_done = True
-                    self.feedback += f"{p.absolute()} does not exist. Aborting."
+                    self.feedback += f"{p} does not exist. Aborting."
                     self.score = 0
                     self.result = TestResult.FAIL
                     return self.result

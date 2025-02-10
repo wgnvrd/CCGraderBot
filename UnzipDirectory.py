@@ -19,6 +19,7 @@ class UnzipDirectory(TestModule):
     def run(self, working_directory: TestInputWrapper):
         
         self.dest = os.path.dirname(working_directory.path)
+        print(self.dest)
         if self.give_zip:
             working_directory.path = self.target
         try:
