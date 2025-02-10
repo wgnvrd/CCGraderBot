@@ -75,6 +75,7 @@ class ConfigHandler():
         #     self.add_course_to_autograder_config(course)
         # doc = self.get_config_file()
         fname = doc["course-configs"][str(course_id)]
+        print(fname)
 
         return CONFIG_DIR / fname
 

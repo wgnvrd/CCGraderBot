@@ -31,4 +31,4 @@ class UnzipDirectory(TestModule):
         except FileNotFoundError:
             self.score = 0
             self.testing_done = True
-            self.feedback= "ERROR: File Not Found"
+            self.feedback= f"ERROR: File {working_directory.path.name} Not Found"

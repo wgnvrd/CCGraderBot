@@ -54,11 +54,13 @@ class SLURMRunner():
         course_id = s.course_id
         assignment_id = s.assignment_id
         submission_id = s.id
-        course = canvas.get_course(course_id)
-        config = self.ch.get_course_config(course)
+        user_id = s.user_id
+        # course = canvas.get_course(course_id)
+        config = self.ch.get_course_config_file(course_id)['default']
         repo_location = "/home/i_wagenvoord/cc-grader-bot"
         slurm_script_path = self.get_slurm_script_path(s)
         print(slurm_script_path)
+        print(config)
         # unit_tests = config["pipeline"]["steps"][0]["path"] # hard-coded
         script = f"""#!/bin/bash
             #SBATCH --job-name={slurm_script_path.name}-{"{}"}{"{}"}
@@ -71,7 +73,7 @@ class SLURMRunner():
             echo %j
             module load {config['module-name']}
             cd {repo_location} 
-            python3 test_runner.py {test_dir} {course_id} {assignment_id} {submission_id}
+            python3 test_runner.py {test_dir} {course_id} {assignment_id} {submission_id} {user_id}
         """
         script = dedent(script)
         # print(s)

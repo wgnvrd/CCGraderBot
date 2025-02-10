@@ -2,6 +2,7 @@ from typing import List, ClassVar
 from pathlib import Path
 import argparse
 import sys
+import json
 
 from CompileModule import CompileModule
 from JUnitModule import JUnitModule
@@ -24,8 +25,11 @@ parser.add_argument('test_dir')
 parser.add_argument('course_id')
 parser.add_argument('assignment_id')
 parser.add_argument('submission_id')
+parser.add_argument('user_id')
 
 #python3 test_runner.py ./testing/first_assignment.zip  43491 155997 24388
+
+OUT_DIR = Path("/home/i_wagenvoord/autograding/test_output/")
 
 class TestRunner():
     """
@@ -45,6 +49,7 @@ class TestRunner():
         self.pipeline: List[TestModule] = []
         self.score = 0
         self.feedback = ""
+        self.input = None
 
     def build_pipeline(self):
         """
@@ -55,7 +60,6 @@ class TestRunner():
         pipeline_config: dict = self.config['pipeline']
         
         self.input = TestInputWrapper(self.target)
-        
         
         for module_config in pipeline_config['steps']: 
             test_module_class: ClassVar[TestModule] = self.map[module_config['type']]
@@ -80,6 +84,7 @@ class TestRunner():
         return self.feedback
 
 if __name__ == "__main__":
+    # Any standard output here will be seen in the SLURM output
     args = parser.parse_args()
     test_dir = Path(args.test_dir)
     # course = canvas.get_course(args.course_id)
@@ -87,15 +92,35 @@ if __name__ == "__main__":
     # submission = assignment.get_submission(args.submission_id)
 
     ch = get_config_handler()
+    # course_config = ch.get_course_config_file(args.course_id)['default']
     config = ch.get_assignment_config(args.course_id, args.assignment_id)
+    print("Assignment config: ")
+    print(config)
 
-    test_runner = TestRunner(test_dir, config)
+    test_runner = TestRunner(test_dir / config['pipeline']['input'], config)
     
     test_runner.build_pipeline()
     test_runner.run()
 
     # (Band-aid code) For now, let's report score and feedback to Autograder by writing to a JSON file? 
+    # We need a better solution for this
     score = test_runner.get_score()
     feedback = test_runner.get_feedback()
     
-    submission.edit(submission={'posted_grade': score}, comment={'text_comment': feedback})
+    # For SLURM logs
+    print(score)
+    print(feedback)
+    
+    output = {
+        "course_id": args.course_id,
+        "assignment_id": args.assignment_id,
+        "submission_id": args.submission_id,
+        "user_id": args.user_id,
+        "score": score,
+        "feedback": feedback
+    }
+    
+    with open(OUT_DIR / f"{args.course_id}-{args.assignment_id}-{args.submission_id}.json", "w") as f:
+        json.dump(output, f)
+
+    # submission.edit(submission={'posted_grade': score}, comment={'text_comment': feedback})

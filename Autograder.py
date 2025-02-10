@@ -3,6 +3,8 @@ import os#, pathlib,
 import time
 from pathlib import Path
 from random import randint
+import json
+from textwrap import dedent
 
 from canvasapi.submission import Submission
 from canvasapi.canvas_object import CanvasObject
@@ -28,6 +30,7 @@ canvas = get_canvas_api()
 load_dotenv(".env")
 
 AUTOGRADE_DIR = Path("/home/i_wagenvoord/autograding/downloads")
+OUT_DIR = Path("/home/i_wagenvoord/autograding/test_output/")
 
 class Autograder():
     def __init__(self, course_id):
@@ -66,14 +69,30 @@ class Autograder():
             time.sleep(interval)
 
     def poll_canvas(self):
+        currently_grading = set()
         while True:
             print("Looking for ungraded assignments...")
             # assignment = self.course.get_assignment(assignment_id)
             ungraded_submissions = self.poll(lambda: self.get_ungraded_assignment_submissions())
             for submission in ungraded_submissions:
-                if submission.id == 3336088:
+                if submission.id in currently_grading:
+                    print(f"Grading {submission.id} already in progress")
                     continue
                 self.dispatch_test(submission)
+                currently_grading.add(submission.id)
+            for p in OUT_DIR.glob("*.json"):
+                with open(p, 'r') as f:
+                    data = json.load(f)
+                    print(data)
+                course = self.canvas.get_course(data["course_id"])
+                assignment = course.get_assignment(data["assignment_id"])
+                submission = assignment.get_submission(data["user_id"])
+                score = data["score"]
+                feedback = data["feedback"]
+                submission.edit(submission={'posted_grade': score}, comment={'text_comment': feedback})
+                p.unlink() # delete the file
+
+
         
     def download_submission(self, submission: Submission, dest: Path):
         """ Download student submission """
@@ -211,5 +230,18 @@ def writeConfig(courseId, assignId, testFilePath, language):
 
 
 if __name__ == "__main__":
-    autograder = Autograder(43491)
-    autograder.poll_canvas()
+    banner = """ _______  _______  _______  _______ 
+|       ||   _   ||       ||       |
+|       ||  |_|  ||_     _||  _____|
+|       ||       |  |   |  | |_____   ／l、      
+|      _||       |  |   |  |_____  |（ﾟ､ ｡ ７    
+|     |_ |   _   |  |   |   _____| |  l  ~ヽ     
+|_______||__| |__|  |___|  |_______|  じしf_,)ノ
+"""
+    dedent(banner) 
+    print(banner)
+    try: 
+        autograder = Autograder(43491)
+        autograder.poll_canvas()
+    except KeyboardInterrupt:
+        print("\nStopping autograder.")
