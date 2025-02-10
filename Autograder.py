@@ -27,7 +27,7 @@ from CanvasHelper import (
 canvas = get_canvas_api()
 load_dotenv(".env")
 
-AUTOGRADE_DIR = Path("./testing")
+AUTOGRADE_DIR = Path("/home/i_wagenvoord/autograding/downloads")
 
 class Autograder():
     def __init__(self, course_id):
