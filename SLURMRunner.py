@@ -6,10 +6,11 @@ from canvasapi.submission import Submission
 
 from CanvasHelper import get_canvas_api
 from ConfigHandler import get_config_handler
+from settings import PROGRAM_DIR
 
 canvas = get_canvas_api()
 
-SLURM_DIR = Path("/home/i_wagenvoord/autograding/slurm")
+SLURM_DIR = PROGRAM_DIR  / "slurm"
 """
 Generate an sbatch script
 Submit the script to SLURM using sbatch <script name>

@@ -6,9 +6,9 @@ from slugify import slugify
 import tomlkit
 
 from CanvasHelper import canvas
+from settings import PROGRAM_DIR
 
-# CONFIG_DIR = Path("/home/i_wagenvoord/autograder/")
-CONFIG_DIR = Path("/home/i_wagenvoord/autograding/config_files")
+CONFIG_DIR = PROGRAM_DIR / config_files
 
 if not CONFIG_DIR.exists():
     CONFIG_DIR.mkdir(parents=True, exist_ok=True)

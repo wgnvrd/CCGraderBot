@@ -22,6 +22,8 @@ from CanvasHelper import (
     grade_submission, 
     get_ungraded_submissions
 )
+
+from settings import PROGRAM_DIR
 # from ConfigHandler import ConfigHandler
 # from ValidateDirectory import ValidateDirectory
 # from UnzipDirectory import UnzipDirectory
@@ -29,8 +31,8 @@ from CanvasHelper import (
 canvas = get_canvas_api()
 load_dotenv(".env")
 
-AUTOGRADE_DIR = Path("/home/i_wagenvoord/autograding/downloads")
-OUT_DIR = Path("/home/i_wagenvoord/autograding/test_output/")
+AUTOGRADE_DIR = PROGRAM_DIR / "downloads"
+OUT_DIR = PROGRAM_DIR / "test_output"
 
 class Autograder():
     def __init__(self, course_id):
@@ -93,8 +95,6 @@ class Autograder():
                 print(f"Posted grade {score} to submission {submission.id}")
                 p.unlink() # delete the file
 
-
-        
     def download_submission(self, submission: Submission, dest: Path):
         """ Download student submission """
         for attachment in submission.attachments:

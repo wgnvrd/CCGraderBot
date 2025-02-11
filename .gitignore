@@ -1,3 +1,5 @@
 testing
 .env
 __pycache__
+settings.py
+.vscode/
