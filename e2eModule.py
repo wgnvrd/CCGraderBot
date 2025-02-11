@@ -7,9 +7,10 @@ End to End Testing Module:
 Max Points -- Not Sure if we need this -- may be removed
 Command -- List of flags for command i.e. for "rm -rf" command = ["rm","-rf"]
 reqs -- Dictionary where keys are final output of command and values are the points associated with that output
+fatal -- if true, if this test fails, ends all further tests
 """
 class e2eModule(TestModule):
-    def __init__(self, max_score, command, reqs):
+    def __init__(self, max_score, command, reqs, fatal):
         super().__init__()
         self.max = max_score
         self.command = command
@@ -22,9 +23,11 @@ class e2eModule(TestModule):
             print(self.command)
             result = subprocess.run(self.command, capture_output = True, text = True, cwd= working_directory.path)
         except subprocess.CalledProcessError as e:
-            print("error)")
+            print("error")
             self.feedback += "\n" + "Command failed with exit code:" + e.returncode 
             self.feedback += "\n" + "Error output:" + e.stderr.decode()
+            if self.fatal:
+                self.testing_done = True
         #If output not an expected output -- set score to 0
         
         self.feedback += result.stdout.split("\n")[-2]
@@ -32,10 +35,12 @@ class e2eModule(TestModule):
             self.score = self.reqs[self.feedback]
         else:
             self.score = 0
+            if self.fatal:
+                self.testing_done = True
         
 
 
-        self.testing_done = True
+    
 
 
 

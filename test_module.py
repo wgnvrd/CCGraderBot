@@ -10,6 +10,7 @@ class TestModule():
         # Setting this to true should prevent accidental accumulation of scores?
         self.testing_done = False 
         self.result = None
+        self.fatal = False
 
     def run(self):
         """

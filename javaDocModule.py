@@ -4,9 +4,9 @@ from test_input_wrapper import TestInputWrapper
 from test_module import TestModule
 from check_file import check_file;
 class javaDocModule(TestModule):
-    def __init__(self, max_score: float, files: List[Path]):
+    def __init__(self, max_score: float, files: List[Path], fatal = False):
         super().__init__()
-        
+        self.fatal = fatal
         self.max_score = max_score
         self.files = files
 
@@ -21,6 +21,8 @@ class javaDocModule(TestModule):
                     self.score = 0
                     self.feedback += f"\n{f}:"
                     self.feedback += "\n".join(problems)
+                    if self.fatal:
+                        self.testing_done = True
                 else:
                     self.score = self.max_score
                     self.feedback += "\n JavaDoc Test Passed"

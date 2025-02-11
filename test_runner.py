@@ -35,6 +35,8 @@ OUT_DIR = Path("/home/i_wagenvoord/autograding/test_output/")
 class TestRunner():
     """
     Initializes and runs pipeine based on assignment configuration.
+    New Modules just need to be added to the below dictionary
+    - Ensure that the input parameters for the module match the parameters in the config file INCLUDING parameter names
     """
     def __init__(self, attach_path: Path, config: dict):
         self.config: dict = config
@@ -69,6 +71,9 @@ class TestRunner():
             self.pipeline.append(test_module)
 
     def run(self):
+        """
+        Run each test -- if theres a fatal failure, ends the rest of the testing
+        """
         for test_module in self.pipeline:
             
             test_module.run(self.input)

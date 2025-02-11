@@ -7,7 +7,7 @@ from test_result_enums import TestResult
 from test_input_wrapper import TestInputWrapper
 
 class UnzipDirectory(TestModule):
-    def __init__(self, target: TestInputWrapper = TestInputWrapper("null"), max_score: int = 0):
+    def __init__(self, target: TestInputWrapper = TestInputWrapper("null"), max_score: int = 0, fatal = True):
         super().__init__()
         self.give_zip = False
         if target.path != Path("null"):
