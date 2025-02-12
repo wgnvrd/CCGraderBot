@@ -93,6 +93,20 @@ class CLI(object):
         course = self.gc(args.course_id)
         print(course)
 
+
+    def get_courses(self):
+        parser = argparse.ArgumentParser(description="Get all courses for the user")
+        parser.add_argument("--active", help = "Status of classes to return")
+        args = parser.parse_args(sys.argv[2:])
+        if args.active:
+            courses = self.canvas.get_courses(enrollment_state = 'active',enrollment_type = "teacher")
+        else:
+            courses = self.canvas.get_courses(enrollment_type = "teacher")
+        for c in courses:
+            
+            print(c)
+
+
     def get_assignment_groups(self):
         """
         This is the method the CLI diverts to to get the groups of assignments 
