@@ -36,7 +36,7 @@ class JavaRuntimeModule(TestModule):
         Run method for the java runtime module
         This method aggregates multiple runs of all given files 
         by executing a command using the Linux 'time' utility 
-        to retrieves the wall clock runtime for all given filepaths
+        to retrieve the wall clock runtime for all given filepaths
         """
         for path in self.java_file_paths:
             try:
