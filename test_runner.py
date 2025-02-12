@@ -11,6 +11,7 @@ from UnzipDirectory import UnzipDirectory
 from ValidateDirectory import ValidateDirectory
 from e2eModule import e2eModule
 from javaDocModule import javaDocModule
+from settings import PROGRAM_DIR
 from test_module import TestModule
 from test_input_wrapper import TestInputWrapper
 from CanvasHelper import get_canvas_api
@@ -22,15 +23,15 @@ parser = argparse.ArgumentParser(
     prog="Test Runner",
     description="Build and run test pipelines based on config",
 )
-parser.add_argument('test_dir')
-parser.add_argument('course_id')
-parser.add_argument('assignment_id')
-parser.add_argument('submission_id')
-parser.add_argument('user_id')
+parser.add_argument('test_dir', type=Path)
+parser.add_argument('course_id', type=int)
+parser.add_argument('assignment_id', type=int)
+parser.add_argument('submission_id', type=int)
+parser.add_argument('user_id', type=int)
 
 #python3 test_runner.py ./testing/first_assignment.zip  43491 155997 24388
 
-OUT_DIR = Path("/home/i_wagenvoord/autograding/test_output/")
+OUT_DIR = PROGRAM_DIR / "test_output"
 
 class TestRunner():
     """
@@ -60,14 +61,14 @@ class TestRunner():
         it in self.pipeline.
         """
         # start by moving this to init
-        pipeline_config: dict = self.config['pipeline']
+        modules: list = self.config['modules']
         
         self.input = TestInputWrapper(self.target)
         
-        for module_config in pipeline_config['steps']: 
-            test_module_class: ClassVar[TestModule] = self.map[module_config['type']]
-            del module_config['type']
-            test_module: TestModule = test_module_class(**module_config)
+        for module in modules: 
+            test_module_class: ClassVar[TestModule] = self.map[module['type']]
+            del module['type']
+            test_module: TestModule = test_module_class(**module)
             self.pipeline.append(test_module)
 
     def run(self):
@@ -75,7 +76,6 @@ class TestRunner():
         Run each test -- if theres a fatal failure, ends the rest of the testing
         """
         for test_module in self.pipeline:
-            
             test_module.run(self.input)
             self.score += test_module.get_score()
             self.feedback += test_module.feedback
@@ -101,7 +101,9 @@ if __name__ == "__main__":
     # course_config = ch.get_course_config_file(args.course_id)['default']
     config = ch.get_assignment_config(args.course_id, args.assignment_id)
     
-    input_fname = list(test_dir.glob(config['pipeline']['input']))[0]
+    print(config)
+
+    input_fname = list(test_dir.glob(config['input']))[0]
 
     test_runner = TestRunner(test_dir / input_fname, config)
     
@@ -112,7 +114,7 @@ if __name__ == "__main__":
     # We need a better solution for this
     score = test_runner.get_score()
     feedback = test_runner.get_feedback()
-    
+
     # For SLURM logs
     print(score)
     print(feedback)

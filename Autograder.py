@@ -31,7 +31,7 @@ from settings import PROGRAM_DIR
 canvas = get_canvas_api()
 load_dotenv(".env")
 
-AUTOGRADE_DIR = PROGRAM_DIR / "downloads"
+DOWNLOAD_DIR = PROGRAM_DIR / "downloads"
 OUT_DIR = PROGRAM_DIR / "test_output"
 
 class Autograder():
@@ -125,7 +125,7 @@ class Autograder():
         course_dir = self._make_dirname(course)
         assignment_dir = self._make_dirname(assignment)
         test_path = course_dir / assignment_dir / f"{user_name}-{user_id}-{s.attempt}"
-        test_dir = AUTOGRADE_DIR / test_path
+        test_dir = DOWNLOAD_DIR / test_path
         return test_dir
 
     def dispatch_test(self, submission: Submission):

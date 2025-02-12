@@ -4,7 +4,7 @@ import subprocess
 import junitparser
 
 from pathlib import Path
-
+from settings import JUNIT_JAR
 from glob import glob
 # remove this later
 import configparser
@@ -18,15 +18,15 @@ Module for running JUnit Tests
 class JUnitModule(TestModule):
     """
     max_score - max score earnable with this test
-    testTypes - Subcategories of test and the value associated with each subcategory
+    test_types - Subcategories of test and the value associated with each subcategory
     """
-    def __init__(self,max_score,test,testTypes, fatal = False):
+    def __init__(self,max_score,test,testTypes, fatal = False, times = True):
         super().__init__()
         
         self.max_score = max_score
         self.test = Path("testing") /Path(test)
         self.fatal = fatal
-
+        self.times = times
         self.Scores = testTypes
         self.feedback += "\n UNIT TESTS"
 
@@ -47,7 +47,7 @@ class JUnitModule(TestModule):
         """
         Code Should be compiled before this module is ran -- if not, will error out
         """
-        subprocess.run(['java', '-jar', os.path.join("..","..","lib","junit-platform-console-standalone-1.11.4.jar"), 'execute', '--class-path', './out/', '--scan-class-path', '--reports-dir=results'], cwd = working_directory.path)
+        subprocess.run(['java', '-jar', JUNIT_JAR, 'execute', '--class-path', './out/', '--scan-class-path', '--reports-dir=results'], cwd = working_directory.path)
         data = junitparser.JUnitXml.fromfile(os.path.join(working_directory.path, "results", "TEST-junit-jupiter.xml"))
         
         """
@@ -75,6 +75,9 @@ class JUnitModule(TestModule):
 
                 else:
                     commentDict[category].append("\n SUCCESS: " + case.name)
+                    if self.times:
+                        commentDict[category].append(" time: " + case.time)
+
         """
         Parses through each category and adds the respective points for each successful category
         """
