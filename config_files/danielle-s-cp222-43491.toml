@@ -13,7 +13,7 @@ unit_test_dir = "/packages/mcscn/cp222/2023b2_cp222/bin"
 id=155997
 language = "java"
 input="first_assignment.zip"
-
+active = true
 [RECALL_JAVA.meta]
 assignment_name = "Recall JAVA"
 
@@ -51,6 +51,7 @@ test_types = {"fillArray" = 1, "filename" = 1, "seekLetter" = 1}
 [Debugger_Maze]
 language = "Java"
 id=155990
+active = true
 
 [Debugger_Maze.meta]
 
@@ -76,130 +77,131 @@ reqs = {"Oh no! No tea and no Alex!"= 1,"Oh no! You didn't find Alex with the te
 
 [155972]
 assignment-name = "DFA Library"
-
+active = false
 [155972.pipeline]
 
 [155996]
-assignment-name = "Macro Assembler"
 
+assignment-name = "Macro Assembler"
+active = false
 [155996.pipeline]
 
 [155991]
 assignment-name = "Exceptional Work"
-
+active = false
 [155991.pipeline]
 
 [155971]
 assignment-name = "DFA Application"
-
+active = false
 [155971.pipeline]
 
 [155998]
 assignment-name = "Regular Expressions"
-
+active = false
 [155998.pipeline]
 
 [155992]
 assignment-name = "JAVA Diagram 1"
-
+active = false
 [155992.pipeline]
 
 [155993]
 assignment-name = "JAVA Diagram 2"
-
+active = false
 [155993.pipeline]
 
 [155994]
 assignment-name = "JAVA Diagram 3"
-
+active = false
 [155994.pipeline]
 
 [155995]
 assignment-name = "JAVA Diagram 4"
-
+active = false
 [155995.pipeline]
 
 [155973]
 assignment-name = "Day 1"
-
+active = false
 [155973.pipeline]
 
 [155982]
 assignment-name = "Day 2"
-
+active = false
 [155982.pipeline]
 
 [155983]
 assignment-name = "Day 3"
-
+active = false
 [155983.pipeline]
 
 [155984]
 assignment-name = "Day 4"
-
+active = false
 [155984.pipeline]
 
 [155985]
 assignment-name = "Day 5"
-
+active = false
 [155985.pipeline]
 
 [155986]
 assignment-name = "Day 6"
-
+active = false
 [155986.pipeline]
 
 [155987]
 assignment-name = "Day 7"
-
+active = false
 [155987.pipeline]
 
 [155988]
 assignment-name = "Day 8"
-
+active = false
 [155988.pipeline]
 
 [155989]
 assignment-name = "Day 9"
-
+active = false
 [155989.pipeline]
 
 [155974]
 assignment-name = "Day 10"
-
+active = false
 [155974.pipeline]
 
 [155975]
 assignment-name = "Day 11"
-
+active = false
 [155975.pipeline]
 
 [155976]
 assignment-name = "Day 12"
-
+active = false
 [155976.pipeline]
 
 [155977]
 assignment-name = "Day 13"
-
+active = false
 [155977.pipeline]
 
 [155978]
 assignment-name = "Day 14"
-
+active = false
 [155978.pipeline]
 
 [155979]
 assignment-name = "Day 15"
-
+active = false
 [155979.pipeline]
 
 [155980]
 assignment-name = "Day 16"
-
+active = false
 [155980.pipeline]
 
 [155981]
 assignment-name = "Day 17"
-
+active = false
 [155981.pipeline]

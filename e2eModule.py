@@ -29,7 +29,8 @@ class e2eModule(TestModule):
             if self.fatal:
                 self.testing_done = True
         #If output not an expected output -- set score to 0
-        
+        #This checks the second to last line output -- we could make this configurable
+        #Its like this because Java println and Python print both put \n at the end of lines, creating a empty line in the -1 position
         self.feedback += result.stdout.split("\n")[-2]
         if self.feedback in self.reqs.keys():
             self.score = self.reqs[self.feedback]
