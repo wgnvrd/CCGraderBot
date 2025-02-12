@@ -76,7 +76,7 @@ class JUnitModule(TestModule):
                 else:
                     commentDict[category].append("\n SUCCESS: " + case.name)
                     if self.times:
-                        commentDict[category].append(" time: " + case.time)
+                        commentDict[category].append(" time: " + str(case.time))
 
         """
         Parses through each category and adds the respective points for each successful category
