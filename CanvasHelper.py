@@ -47,3 +47,9 @@ def get_submission(course_id, assign_id, userId):
     return canvas.get_course(course_id).get_assignment(assign_id).get_submission(userId)
 
 # print(canvas.get_courses(enrollment_type="teacher")[0].name)
+
+def get_course_url(course_id):
+    return f"{API_URL}/courses/{course_id}"
+
+def get_assignment_url(course_id, assignment_id):
+    return f"{get_course_url(course_id)}/assignments/{assignment_id}"

@@ -41,7 +41,7 @@ class SLURMRunner():
     #         attachment.download(download_path / attachment.display_name)
 
     def get_slurm_script_path(self, s: Submission) -> Path:
-        return Path(f"autograde-{s.course_id}-{s.assignment_id}.slurm")
+        return SLURM_DIR / Path(f"autograde-{s.course_id}-{s.assignment_id}.slurm")
 
     def generate_slurm_script(self, s: Submission, test_dir: Path):
         """
@@ -57,22 +57,27 @@ class SLURMRunner():
         submission_id = s.id
         user_id = s.user_id
         # course = canvas.get_course(course_id)
-        config = self.ch.get_course_config_file(course_id)['default']
+        config = self.ch.get_course_config_file(course_id)['course']
+        assignment_config = self.ch.get_assignment_config(course_id, assignment_id)
         repo_location = "/home/i_wagenvoord/cc-grader-bot"
         slurm_script_path = self.get_slurm_script_path(s)
         print(slurm_script_path)
         print(config)
         # unit_tests = config["pipeline"]["steps"][0]["path"] # hard-coded
+
+        partition = assignment_config["partition"] if "partition" in assignment_config else "Cpu40"
+        max_time = assignment_config["max_time"] if "max_time" in assignment_config else "00:01:00"
+
         script = f"""#!/bin/bash
             #SBATCH --job-name={slurm_script_path.name}-{"{}"}{"{}"}
             #SBATCH --output=%j.out
             #SBATCH --nodes=1
             #SBATCH --ntasks=1
             #SBATCH --cpus-per-task=1
-            #SBATCH --time=00:01:00
+            #SBATCH --time={max_time}
+            #SBATCH --partition={partition}
 
-            echo %j
-            module load {config['module-name']}
+            module load {config['lua_module']}
             cd {repo_location} 
             python3 test_runner.py {test_dir} {course_id} {assignment_id} {submission_id} {user_id}
         """

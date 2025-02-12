@@ -18,7 +18,7 @@ Module for running JUnit Tests
 class JUnitModule(TestModule):
     """
     max_score - max score earnable with this test
-    testTypes - Subcategories of test and the value associated with each subcategory
+    test_types - Subcategories of test and the value associated with each subcategory
     """
     def __init__(self,max_score,test,testTypes, fatal = False, times = True):
         super().__init__()
