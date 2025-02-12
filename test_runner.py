@@ -102,8 +102,7 @@ if __name__ == "__main__":
     config = ch.get_assignment_config(args.course_id, args.assignment_id)
     
     print(config)
-
-    input_fname = list(test_dir.glob(config['input']))[0]
+    input_fname = list(test_dir.glob('*.zip'))[0]
 
     test_runner = TestRunner(test_dir / input_fname, config)
     

@@ -40,7 +40,7 @@ source= ["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstE
 max_score = 3
 type = "JUnit"
 test = "test/FirstTest.java"
-testTypes = {"fillArray" = 1, "filename" = 1, "seekLetter" = 1}
+test_types = {"fillArray" = 1, "filename" = 1, "seekLetter" = 1}
 # possible way for doing end-to-end tests
 # steps = [
 #     {type = "unzip" },
