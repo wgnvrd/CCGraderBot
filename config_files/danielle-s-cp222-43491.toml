@@ -1,41 +1,42 @@
-
 # AUTOGRADING CONFIGURATION FOR Danielle's CP222
-[default]
-course-id = 43491
-course-name = "Danielle's CP222"
-module-name = "cp222/2023_block2"
-unit-test-dir = "/packages/mcscn/cp222/2023b2_cp222/bin"
+[meta] # For debugging purposes, updated by CATS to provide information about the 
+# corresponding course ID based on the TOML file mapping.
+course_name = "Danielle's CP222"
+course_id = 43491
+url = "https://canvas.coloradocollege.edu/courses/43491/"
 
-# perhaps there should be an id mapping instead...
+[course]
+lua_module = "cp222/2023_block2"
+unit_test_dir = "/packages/mcscn/cp222/2023b2_cp222/bin"
 
-[155997]
-assignment-name = "Recall JAVA"
+[RECALL_JAVA] # assignment settings that apply to all test modules
+id=155997
 language = "java"
-
-[155997.pipeline]
-# should we be able to accept multiple inputs?
 input="first_assignment.zip"
 
-[[155997.pipeline.steps]]
+[RECALL_JAVA.meta]
+assignment_name = "Recall JAVA"
+
+[[RECALL_JAVA.modules]] # module-specific settings
 type="UnzipDirectory"
 
-
-[[155997.pipeline.steps]]
+[[RECALL_JAVA.modules]]
 type="ValidateDirectory"
 max_score=0.5
 root="first_assignment"
 paths=["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"]
 
-[[155997.pipeline.steps]]
+[[RECALL_JAVA.modules]]
 type="JavaDoc"
 max_score = 0.5
 files = ["src/First.java"]
 
-[[155997.pipeline.steps]]
+[[RECALL_JAVA.modules]]
 type = "Compile"
 max_score = 0
 source= ["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"]
-[[155997.pipeline.steps]]
+
+[[RECALL_JAVA.modules]]
 max_score = 3
 type = "JUnit"
 test = "test/FirstTest.java"
@@ -47,26 +48,27 @@ testTypes = {"fillArray" = 1, "filename" = 1, "seekLetter" = 1}
 #     {type = "javadoc", paths = ["src/First.java"], value = 0.5},
 #     {type = "unit-tests", path = "first_assignment/test/FirstTest.java", tests = {"fillArray" = 1, "filename" = 1, "seekLetter" = 1}},
 # ]
-[155990]
-assignment-name = "Debugger Maze"
+[Debugger_Maze]
 language = "Java"
-[155990.pipeline]
+id=155990
 
-[[155990.pipeline.steps]]
+[Debugger_Maze.meta]
+
+[[Debugger_Maze.modules]]
 type="UnzipDirectory"
 
-[[155990.pipeline.steps]]
+[[Debugger_Maze.modules]]
 type="ValidateDirectory"
 max_score=1
 root="maze"
 paths=["moves.txt", "README.txt", "src/DoneBrokeException.java", "src/InvalidMoveException.java", "src/MazeGenerator.java","src/Maze.java", "src/Room.java"]
 
-[[155990.pipeline.steps]]
+[[Debugger_Maze.modules]]
 type = "Compile"
 max_score = 0
 source= ["src/DoneBrokeException.java", "src/InvalidMoveException.java", "src/MazeGenerator.java", "src/Maze.java", "src/Room.java"]
 
-[[155990.pipeline.steps]]
+[[Debugger_Maze.modules]]
 type = "EndToEnd"
 max_score = 3
 command = "java -cp out Maze"
