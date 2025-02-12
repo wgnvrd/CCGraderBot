@@ -80,7 +80,11 @@ class ConfigHandler():
         fname = doc["course_configs"][str(course_id)]
 
         return CONFIG_DIR / fname
-    def check_active(self, assign_id, course_id):
+    def check_active(self,  course_id, assign_id):
+        if course_id not in self.assignment_mappings:
+            self.parse_assignment_configs(course_id)
+        if assign_id not in self.assignment_mappings[course_id]:
+            return False
         doc = self.get_assignment_config(course_id, assign_id)
         return doc["active"]
 

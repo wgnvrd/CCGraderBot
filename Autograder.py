@@ -15,7 +15,7 @@ import junitparser
 from slugify import slugify
 from test_runner import TestRunner
 from SLURMRunner import SLURMRunner
-import ConfigHandler
+from ConfigHandler import get_config_handler
 from CanvasHelper import (
     get_canvas_api,
     get_submission,
@@ -36,6 +36,7 @@ OUT_DIR = PROGRAM_DIR / "test_output"
 
 class Autograder():
     def __init__(self, course_id):
+        self.ch = get_config_handler()
         self.canvas = get_canvas_api()
         self.course = self.canvas.get_course(course_id)
         self.ungraded_assignments = set()
@@ -78,7 +79,7 @@ class Autograder():
             ungraded_submissions = self.poll(lambda: self.get_ungraded_assignment_submissions())
             for submission in ungraded_submissions:
                 
-                if not ConfigHandler.check_active(submission.course_id, submission.assignment_id):
+                if not self.ch.check_active(submission.course_id, submission.assignment_id):
                     continue
 
                 if submission.id in currently_grading:
