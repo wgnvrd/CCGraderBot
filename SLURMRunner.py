@@ -75,7 +75,7 @@ class SLURMRunner():
             #SBATCH --ntasks=1
             #SBATCH --cpus-per-task=1
             #SBATCH --time={max_time}
-            #SBATCH --partition={partition}
+            ##SBATCH --partition={partition}
 
             module load {config['lua_module']}
             cd {repo_location} 
