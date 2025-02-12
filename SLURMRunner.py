@@ -59,7 +59,7 @@ class SLURMRunner():
         # course = canvas.get_course(course_id)
         config = self.ch.get_course_config_file(course_id)['course']
         assignment_config = self.ch.get_assignment_config(course_id, assignment_id)
-        repo_location = "/home/i_wagenvoord/cc-grader-bot"
+        repo_location = PROGRAM_DIR
         slurm_script_path = self.get_slurm_script_path(s)
         print(slurm_script_path)
         print(config)
