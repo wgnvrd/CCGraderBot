@@ -11,6 +11,7 @@ from UnzipDirectory import UnzipDirectory
 from ValidateDirectory import ValidateDirectory
 from e2eModule import e2eModule
 from javaDocModule import javaDocModule
+from settings import PROGRAM_DIR
 from test_module import TestModule
 from test_input_wrapper import TestInputWrapper
 from CanvasHelper import get_canvas_api
@@ -30,7 +31,7 @@ parser.add_argument('user_id')
 
 #python3 test_runner.py ./testing/first_assignment.zip  43491 155997 24388
 
-OUT_DIR = Path("/home/i_wagenvoord/autograding/test_output/")
+OUT_DIR = PROGRAM_DIR / "test_output"
 
 class TestRunner():
     """

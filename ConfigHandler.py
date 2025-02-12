@@ -8,7 +8,7 @@ import tomlkit
 from CanvasHelper import canvas
 from settings import PROGRAM_DIR
 
-CONFIG_DIR = PROGRAM_DIR / config_files
+CONFIG_DIR = PROGRAM_DIR / "config_files"
 
 if not CONFIG_DIR.exists():
     CONFIG_DIR.mkdir(parents=True, exist_ok=True)
