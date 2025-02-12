@@ -20,14 +20,14 @@ class JUnitModule(TestModule):
     max_score - max score earnable with this test
     test_types - Subcategories of test and the value associated with each subcategory
     """
-    def __init__(self,max_score,test,testTypes, fatal = False, times = True):
+    def __init__(self,max_score,test, test_types, fatal = False, times = True):
         super().__init__()
         
         self.max_score = max_score
         self.test = Path("testing") /Path(test)
         self.fatal = fatal
         self.times = times
-        self.Scores = testTypes
+        self.Scores = test_types
         self.feedback += "\n UNIT TESTS"
 
     def get_score(self):
