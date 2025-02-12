@@ -15,7 +15,7 @@ import junitparser
 from slugify import slugify
 from test_runner import TestRunner
 from SLURMRunner import SLURMRunner
-
+from ConfigHandler import check_active
 from CanvasHelper import (
     get_canvas_api,
     get_submission,
@@ -77,6 +77,10 @@ class Autograder():
             # assignment = self.course.get_assignment(assignment_id)
             ungraded_submissions = self.poll(lambda: self.get_ungraded_assignment_submissions())
             for submission in ungraded_submissions:
+                
+                if not check_active(submission.course_id, submission.assignment_id):
+                    continue
+
                 if submission.id in currently_grading:
                     print(f"Grading {submission.id} already in progress")
                     continue

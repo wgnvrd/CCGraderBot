@@ -80,6 +80,9 @@ class ConfigHandler():
         fname = doc["course_configs"][str(course_id)]
 
         return CONFIG_DIR / fname
+    def check_active(self, assign_id, course_id):
+        doc = self.get_assignment_config(course_id, assign_id)
+        return doc["active"]
 
     def generate_course_config(self, course_id: int):
         """
@@ -113,8 +116,10 @@ class ConfigHandler():
                 doc.add(assignment_name, {
                         "id": a.id,
                         "url": get_assignment_url(course.id, a.id),
+                        "active": False,
                         "input": "",
                         "modules": tomlkit.table()
+                        
                     })
             with open(config_path, "w") as f:
                  tomlkit.dump(doc, f)
