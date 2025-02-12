@@ -93,6 +93,7 @@ class Autograder():
                 feedback = data["feedback"]
                 submission.edit(submission={'posted_grade': score}, comment={'text_comment': feedback})
                 print(f"Posted grade {score} to submission {submission.id}")
+                currently_grading.remove(submission.id)
                 p.unlink() # delete the file
 
     def download_submission(self, submission: Submission, dest: Path):
