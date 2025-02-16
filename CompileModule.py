@@ -5,15 +5,17 @@ from test_module import TestModule
 
 
 class CompileModule(TestModule):
-    def __init__(self,max_score,source):
+    def __init__(self,max_score,source, additional = []):
         super().__init__()
         
         self.max_score = max_score
         self.source = source
         self.feedback += "\n COMPILATION TEST"
+        self.additional = additional
 
     def run(self, working_directory):
         self.paths = [working_directory.path / Path(p) for p in self.source]
+        self.paths += self.additional
         try:
             subprocess.run(["javac","-d", os.path.join(working_directory.path,"out"), "-cp", os.path.join("lib","junit-platform-console-standalone-1.11.4.jar"),*self.paths ])# self.source])
         except FileNotFoundError:

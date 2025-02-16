@@ -35,6 +35,7 @@ files = ["src/First.java"]
 type = "Compile"
 max_score = 0
 source= ["test/FirstTest.java", "src/First.java", "src/FirstI.java", "src/FirstException.java", "src/RunFirst.java"]
+additional = []
 
 [[RECALL_JAVA.modules]]
 max_score = 3
