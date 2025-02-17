@@ -25,7 +25,7 @@ class UnzipDirectory(TestModule):
         try:
             with zipfile.ZipFile(working_directory.path, 'r') as zip_ref:
                 zip_ref.extractall(self.dest)
-            self.feedback = f"Unzipped {working_directory.path} to {self.dest}\n\n"
+            self.feedback = f"Unzipped {os.path.basename(working_directory.path)} to {os.path.basename(self.dest)}\n\n"
             self.score = self.max_score
             working_directory.set_path(self.dest)
         except FileNotFoundError:

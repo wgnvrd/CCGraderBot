@@ -41,7 +41,7 @@ def submission_is_resubmission(submission: Submission):
 # gets all submissions for a given assignment that are ungraded
 def get_ungraded_submissions(assignment: Assignment):
     submissions = assignment.get_submissions()
-    return [s for s in submissions if not submission_is_graded(s)]
+    return [s for s in submissions if not submission_is_graded(s) and s.attempt ]
 
 def get_submission(course_id, assign_id, userId):
     return canvas.get_course(course_id).get_assignment(assign_id).get_submission(userId)

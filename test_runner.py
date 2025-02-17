@@ -81,7 +81,8 @@ class TestRunner():
             self.feedback += test_module.feedback
             self.feedback += "\n"
             if test_module.get_testing_done():
-                return
+                print("break")
+                break
 
     def get_score(self):
         return self.score
@@ -113,11 +114,9 @@ if __name__ == "__main__":
     # We need a better solution for this
     score = test_runner.get_score()
     feedback = test_runner.get_feedback()
-
     # For SLURM logs
     print(score)
     print(feedback)
-    
     output = {
         "course_id": args.course_id,
         "assignment_id": args.assignment_id,
@@ -126,7 +125,6 @@ if __name__ == "__main__":
         "score": score,
         "feedback": feedback
     }
-    
     with open(OUT_DIR / f"{args.course_id}-{args.assignment_id}-{args.submission_id}.json", "w") as f:
         json.dump(output, f)
 
