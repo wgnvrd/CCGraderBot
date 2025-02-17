@@ -274,8 +274,8 @@ class CLI(object):
         """
         parser = argparse.ArgumentParser(description="Grade the most recent submission by a user id for an assignment. If you want punctuation, I think you need to add quotation marks")
         parser.add_argument("--course_id", type=int, help="Course ID of the class you're trying to access")
-        args = parser.parse_args(sys.agv[2:])
-        confighandler = ConfigHandler()
+        args = parser.parse_args(sys.argv[2:])
+        confighandler = ConfigHandler.ConfigHandler()
         confighandler.generate_course_config(args.course_id)
         print("Course config file generated")
 

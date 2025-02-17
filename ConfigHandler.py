@@ -94,7 +94,8 @@ class ConfigHandler():
         """
         course = canvas.get_course(course_id)
         # check if course file already listed in autograder.toml
-        if not course_id in self.get_config_file()['course-configs']:
+        doc = type(self.get_config_file())
+        if course_id not in doc['course_configs']:
             self.add_course_to_autograder_config(course_id)
 
         # Retrieve the path of the configuration file from autograder.toml
