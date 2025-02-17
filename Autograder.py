@@ -15,6 +15,7 @@ import junitparser
 from slugify import slugify
 from test_runner import TestRunner
 from SLURMRunner import SLURMRunner
+from LocalHostRunner import LocalHostRunner
 from ConfigHandler import get_config_handler
 from CanvasHelper import (
     get_canvas_api,
@@ -87,7 +88,14 @@ class Autograder():
                     continue
                 self.dispatch_test(submission)
                 currently_grading.add(submission.id)
+            # grab grading output from SLURM jobs
             for p in OUT_DIR.glob("*.json"):
+                # A problem with this is that someone can put 
+                # their own JSON file with the correct information 
+                # and get a grade for their assignment. We should have
+                # a less hacky approach to get the output from SLURM
+                # (which has no internet access and thus cannot make
+                # external API calls to Canvas) to Canvas
                 with open(p, 'r') as f:
                     data = json.load(f)
                     # print(data)
@@ -98,8 +106,9 @@ class Autograder():
                 feedback = data["feedback"]
                 submission.edit(submission={'posted_grade': score}, comment={'text_comment': feedback})
                 print(f"Posted grade {score} to submission {submission.id}")
-                currently_grading.remove(submission.id)
                 p.unlink() # delete the file
+                if submission.id in currently_grading:
+                    currently_grading.remove(submission.id)
 
     def download_submission(self, submission: Submission, dest: Path):
         """ Download student submission """
@@ -141,7 +150,8 @@ class Autograder():
             test_dir.mkdir(parents=True, exist_ok=True)
         self.download_submission(submission=submission, dest=test_dir)
         # Run test from config
-        runner = SLURMRunner()
+        # runner = SLURMRunner()
+        runner = LocalHostRunner()
         runner.deploy(submission, test_dir)
         # Get corresponding test modules based on config
         # uz = UnzipDirectory(

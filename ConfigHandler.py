@@ -86,7 +86,8 @@ class ConfigHandler():
         if assign_id not in self.assignment_mappings[course_id]:
             return False
         doc = self.get_assignment_config(course_id, assign_id)
-        return doc["active"]
+        # What should happen if "active" key isn't included?
+        return "active" in doc and doc["active"]
 
     def generate_course_config(self, course_id: int):
         """

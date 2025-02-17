@@ -11,6 +11,7 @@ from settings import PROGRAM_DIR
 canvas = get_canvas_api()
 
 SLURM_DIR = PROGRAM_DIR  / "slurm"
+LOG_DIR = PROGRAM_DIR / "logs"
 """
 Generate an sbatch script
 Submit the script to SLURM using sbatch <script name>
@@ -40,6 +41,9 @@ class SLURMRunner():
     #     for attachment in s.attachments:
     #         attachment.download(download_path / attachment.display_name)
 
+    def get_output_path(self, s: Submission) -> Path:
+        return LOG_DIR / f"slurm-autograde-{s.course_id}-{s.assignment_id}-attempt{s.attempt}.out"
+
     def get_slurm_script_path(self, s: Submission) -> Path:
         return SLURM_DIR / Path(f"autograde-{s.course_id}-{s.assignment_id}.slurm")
 
@@ -67,15 +71,15 @@ class SLURMRunner():
 
         partition = assignment_config["partition"] if "partition" in assignment_config else "Cpu40"
         max_time = assignment_config["max_time"] if "max_time" in assignment_config else "00:01:00"
+            ##SBATCH --partition={partition}
 
         script = f"""#!/bin/bash
             #SBATCH --job-name={slurm_script_path.name}-{"{}"}{"{}"}
-            #SBATCH --output=%j.out
+            #SBATCH --output={self.get_output_path(s)}
             #SBATCH --nodes=1
             #SBATCH --ntasks=1
             #SBATCH --cpus-per-task=1
             #SBATCH --time={max_time}
-            ##SBATCH --partition={partition}
 
             module load {config['lua_module']}
             cd {repo_location} 
