@@ -5,6 +5,8 @@ import sys
 import json
 from glob import glob
 
+
+from READMEModule import READMEModule
 from CompileModule import CompileModule
 from JUnitModule import JUnitModule
 from UnzipDirectory import UnzipDirectory
@@ -47,12 +49,13 @@ class TestRunner():
             "JavaDoc": javaDocModule,
             "JUnit": JUnitModule,
             "Compile":CompileModule,
-            "EndToEnd" : e2eModule
+            "EndToEnd" : e2eModule,
+            "README" : READMEModule
         }
         self.target = attach_path
         self.pipeline: List[TestModule] = []
         self.score = 0
-        self.feedback = ""
+        self.feedback = "Graded by C.A.T.S (^..^)~  CC's Automated Testing Suite!\n\n"
         self.input = None
 
     def build_pipeline(self):

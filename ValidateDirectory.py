@@ -17,7 +17,7 @@ class ValidateDirectory(TestModule):
     def run(self, working_directory: TestInputWrapper):
         if not os.path.exists(working_directory.path / self.root):
             # maybe this should be an exception since this is a configuration error?
-            self.feedback += f"{self.root} does not exist. Aborting."
+            self.feedback += f"Root directory {self.root} does not exist. Aborting. Please ensure that all of your files, including folers like src, are zipped up in an internal folder with the exact name {self.root}, i.e. instead of src/Example.java, {self.root}/src/Example.java\n "
             self.result = TestResult.FAIL
             self.testing_done = True
         else:
@@ -25,7 +25,7 @@ class ValidateDirectory(TestModule):
                 if not os.path.exists(working_directory.path / p):
                     print(working_directory.path / p)
                     self.testing_done = True
-                    self.feedback += f"{p} does not exist. Aborting."
+                    self.feedback += f"File {p} does not exist. Aborting."
                     self.score = 0
                     self.result = TestResult.FAIL
                     return self.result

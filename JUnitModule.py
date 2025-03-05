@@ -28,7 +28,7 @@ class JUnitModule(TestModule):
         self.fatal = fatal
         self.times = times
         self.Scores = test_types
-        self.feedback += "\n UNIT TESTS"
+        self.feedback += "\n UNIT TESTS \n"
 
     def get_score(self):
         return self.score
@@ -58,7 +58,7 @@ class JUnitModule(TestModule):
             category = case.system_out.split()[-1]
             
             if category not in self.Scores.keys():
-                self.feedback+= "Error " + case.name + "not testable: " + category + "\n"
+                self.feedback+= "\n Error " + case.name + "not testable: " + category + "\n"
             else:
                 #JUnit only creates a result if theres an error or a failure -- so if there's no result its a success
                 if case.result:
@@ -76,7 +76,7 @@ class JUnitModule(TestModule):
                 else:
                     commentDict[category].append("\n SUCCESS: " + case.name)
                     if self.times:
-                        commentDict[category].append(" time: " + str(case.time))
+                        commentDict[category].append(" time: " + str(case.time) + " secs")
 
         """
         Parses through each category and adds the respective points for each successful category
