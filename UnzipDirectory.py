@@ -10,8 +10,8 @@ class UnzipDirectory(TestModule):
     def __init__(self, target: TestInputWrapper = TestInputWrapper("null"), max_score: int = 0, fatal = True):
         super().__init__()
         self.give_zip = False
-        if target.path != Path("null"):
-            self.target: TestInputWrapper = target
+        if isinstance(target, str):
+            self.target = target
             self.give_zip = True
         
         self.max_score = max_score
@@ -19,14 +19,16 @@ class UnzipDirectory(TestModule):
     def run(self, working_directory: TestInputWrapper):
         
         self.dest = os.path.dirname(working_directory.path)
-        print(self.dest)
         if self.give_zip:
-            working_directory.path = self.target
+            working_directory.set_path(self.target)
         try:
+            print(working_directory.path)
             with zipfile.ZipFile(working_directory.path, 'r') as zip_ref:
                 zip_ref.extractall(self.dest)
             self.feedback = f"Unzipped {os.path.basename(working_directory.path)} to {os.path.basename(self.dest)}\n\n"
             self.score = self.max_score
+            if self.give_zip:
+                self.dest = self.dest +"/" +zip_ref.infolist()[1].filename.split("/")[0]
             working_directory.set_path(self.dest)
         except FileNotFoundError:
             self.score = 0

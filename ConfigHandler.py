@@ -119,12 +119,14 @@ class ConfigHandler():
             doc = tomlkit.parse(s)
             for a in course.get_assignments():
                 assignment_name = slugify(a.name)
+                aot= tomlkit.aot()
+                aot.append(tomlkit.item({"type": "UnzipDirectory"}))
                 doc.add(assignment_name, {
                         "id": a.id,
                         "url": get_assignment_url(course.id, a.id),
                         "active": False,
                         "input": "",
-                        "modules": tomlkit.table()
+                        "modules": aot
                         
                     })
             with open(config_path, "w") as f:

@@ -100,10 +100,14 @@ class CLI(object):
         args = parser.parse_args(sys.argv[2:])
         if args.active:
             courses = self.canvas.get_courses(enrollment_state = 'active',enrollment_type = "teacher")
+            courses1 = self.canvas.get_courses(enrollment_state = 'active',enrollment_type = "ta")
         else:
             courses = self.canvas.get_courses(enrollment_type = "teacher")
+            courses1 = self.canvas.get_courses(enrollment_type = "ta")
         for c in courses:
             
+            print(c)
+        for c in courses1:
             print(c)
 
 
